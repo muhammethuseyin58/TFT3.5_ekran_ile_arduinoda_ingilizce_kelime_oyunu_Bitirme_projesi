@@ -187,6 +187,7 @@ void loop() {
       p.x = 0;
       p.y = 0;
     }
+    //seviye seçme sayfasındaki geri butonuna basınca sayfa 1 i açar
     if (p.x < 313 && p.x > 224 && p.y < 240 && p.y > 163 && sayfa == 2) {
       sayfa = 1;
 
@@ -228,19 +229,33 @@ void loop() {
       skor++;
       cevap_bekleme = 0;
 
+         tft.setCursor(330, 70);
+            tft.setTextColor( 0xF81F);
+            tft.setTextSize(3);
+            tft.print("Dogru");
+            delay(1000);
 
     } else if (yer == 1 && p.x < 873 && p.x > 805 && p.y < 528 && p.y > 348 && sayfa == 3 && cevap_bekleme == 1) {  //doğru cevabın 1. şıkta olduğu soruda yanlış şıkka dokunulduğunda olacaklar
 
       skor = 0;
       cevap_bekleme = 0;
 
+         tft.setCursor(330, 70);
+            tft.setTextColor( 0x07FF);
+            tft.setTextSize(3);
+            tft.print("Yanlis");
+            delay(1000);
 
     } else if (yer == 1 && p.x < 709 && p.x > 640 && p.y < 760 && p.y > 574 && sayfa == 3 && cevap_bekleme == 1) {  //doğru cevabın 1. şıkta olduğu soruda yanlış şıkka dokunulduğunda olacaklar
 
       skor = 0;
       cevap_bekleme = 0;
 
-
+         tft.setCursor(330, 70);
+            tft.setTextColor( 0x07FF);
+            tft.setTextSize(3);
+            tft.print("Yanlis");
+            delay(1000);
     }
 
 
@@ -251,19 +266,32 @@ void loop() {
       skor++;
       cevap_bekleme = 0;
 
+       tft.setCursor(330, 70);
+            tft.setTextColor(0xF81F);
+            tft.setTextSize(3);
+            tft.print("Dogru");
+            delay(1000);
 
     } else if (yer == 2 && p.x < 709 && p.x > 646 && p.y < 372 && p.y > 189 && sayfa == 3 && cevap_bekleme == 1) {  //doğru cevabın 2. şıkta olduğu soruda yanlış şıkka dokunulduğunda olacaklar
 
       skor = 0;
       cevap_bekleme = 0;
 
-
+       tft.setCursor(330, 70);
+            tft.setTextColor(0x07FF);
+            tft.setTextSize(3);
+            tft.print("Yanlis");
+            delay(1000);
     } else if (yer == 2 && p.x < 709 && p.x > 640 && p.y < 760 && p.y > 574 && sayfa == 3 && cevap_bekleme == 1) {  //doğru cevabın 2. şıkta olduğu soruda yanlış şıkka dokunulduğunda olacaklar
 
       skor = 0;
       cevap_bekleme = 0;
 
-
+         tft.setCursor(330, 70);
+            tft.setTextColor(0x07FF);
+            tft.setTextSize(3);
+            tft.print("Yanlis");
+            delay(1000);
     }
 
 
@@ -276,17 +304,32 @@ void loop() {
       skor++;
       cevap_bekleme = 0;
 
+      tft.setCursor(330, 70);
+            tft.setTextColor(0xF81F);
+            tft.setTextSize(3);
+            tft.print("Dogru");
+            delay(1000);
 
     } else if (yer == 3 && p.x < 709 && p.x > 646 && p.y < 372 && p.y > 189 && sayfa == 3 && cevap_bekleme == 1) {  //doğru cevabın 3. şıkta olduğu soruda yanlış şıkka dokunulduğunda olacaklar
 
       skor = 0;
       cevap_bekleme = 0;
 
-
+       tft.setCursor(330, 70);
+            tft.setTextColor(0x07FF);
+            tft.setTextSize(3);
+            tft.print("Yanlis");
+            delay(1000);
     } else if (yer == 3 && p.x < 873 && p.x > 805 && p.y < 528 && p.y > 348 && sayfa == 3 && cevap_bekleme == 1) {  //doğru cevabın 3. şıkta olduğu soruda yanlış şıkka dokunulduğunda olacaklar
 
       skor--;
       cevap_bekleme = 0;
+
+       tft.setCursor(330, 70);
+            tft.setTextColor(0x07FF);
+            tft.setTextSize(3);
+            tft.print("Yanlis");
+            delay(1000);
     }
 
     if (cevap_bekleme == 0) {  // soru sayfası açıldıktan sonra cevap verilene kadar sayfanın değişmemesi için
