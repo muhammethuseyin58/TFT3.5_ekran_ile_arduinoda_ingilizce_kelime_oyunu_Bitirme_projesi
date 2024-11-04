@@ -13,6 +13,7 @@ TouchScreen ts = TouchScreen(9, A2, A3, 8, 300);
 String A1_ingilizce[] = { "Know", "Think", "Buy", "Bring", "Catch", "Run", "Drink",
                           "Swim", "Break", "Forget", "Wear", "Fall", "Eat", "Take", "Lose",
                           "Try", "Hear", "Oturmak", "Alone", "Angry" };
+
 String A1_turkce[] = { "Bilmek", "Dusunmek", "Satin almak", "Getirmek", "Yakalamak",
                        "Kosmak", "Icmek", "Yuzmek", "Kirmak", "Unutmak", "Giymek",
                        "Dusmek", "Yemek", "Almak", "Kaybetmek", "Denemek", "Duymak",
@@ -21,6 +22,7 @@ String A1_turkce[] = { "Bilmek", "Dusunmek", "Satin almak", "Getirmek", "Yakalam
 String A2_ingilizce[] = { "Accept", "Accident", "Adventure", "Agree", "Begin", "Believe",
                           "Bite", "Brain", "Busy", "Cash", "Choose", "Climb", "Cut", "Cute",
                           "Dangerous", "Delete", "Die", "Expensive", "Explain", "Fill" };
+
 String A2_turkce[] = { "kabul etmek", "kaza", "macera", "anlasmak", "baslamak", "inanmak",
                        "isirmak", "beyin", "mesgul", "nakit", "secmek", "tirmanmak", "kesmek",
                        "sevimli", "tehlikeli", "silmek", "olmek", "pahali", "aciklamak", "doldurmak" };
@@ -28,6 +30,7 @@ String A2_turkce[] = { "kabul etmek", "kaza", "macera", "anlasmak", "baslamak", 
 String B1_ingilizce[] = { "advice", "art", "attack", "blood", "destroy", "engine", "import", "low",
                           "peace", "poison", "population", "publish", "remove", "result", "search",
                           "space", "tool", "trade", "truck", "wide" };
+
 String B1_turkce[] = { "tavsiye", "sanat", "saldiri", "kan", "yikmak", "motor", "ithalat", "dusuk",
                        "baris", "zehir", "populasyon", "yayinlamak", "kaldirmak", "sonuc", "arastirmak",
                        "bosluk", "alet", "ticaret", "kamyon", "genis" };
