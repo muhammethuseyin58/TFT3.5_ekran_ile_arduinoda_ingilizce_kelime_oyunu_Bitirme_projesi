@@ -12,28 +12,28 @@ TouchScreen ts = TouchScreen(9, A2, A3, 8, 300);
 //Uygulamada kullanılar kelimeler
 String A1_ingilizce[] = { "Know", "Think", "Buy", "Bring", "Catch", "Run", "Drink",
                           "Swim", "Break", "Forget", "Wear", "Fall", "Eat", "Take", "Lose",
-                          "Try", "Hear", "Oturmak", "Alone", "Angry" };
+                          "Try", "Hear", "Sit", "Alone", "Angry" };
 
 String A1_turkce[] = { "Bilmek", "Dusunmek", "Satin almak", "Getirmek", "Yakalamak",
                        "Kosmak", "Icmek", "Yuzmek", "Kirmak", "Unutmak", "Giymek",
                        "Dusmek", "Yemek", "Almak", "Kaybetmek", "Denemek", "Duymak",
-                       "Sit", "Yalniz", "Kizgin" };
+                       "Oturmak", "Yalniz", "Kizgin" };
 
 String A2_ingilizce[] = { "Accept", "Accident", "Adventure", "Agree", "Begin", "Believe",
                           "Bite", "Brain", "Busy", "Cash", "Choose", "Climb", "Cut", "Cute",
                           "Dangerous", "Delete", "Die", "Expensive", "Explain", "Fill" };
 
-String A2_turkce[] = { "kabul etmek", "kaza", "macera", "anlasmak", "baslamak", "inanmak",
-                       "isirmak", "beyin", "mesgul", "nakit", "secmek", "tirmanmak", "kesmek",
-                       "sevimli", "tehlikeli", "silmek", "olmek", "pahali", "aciklamak", "doldurmak" };
+String A2_turkce[] = { "Kabul etmek", "Kaza", "Macera", "Anlasmak", "Baslamak", "Inanmak",
+                       "Isirmak", "Beyin", "Mesgul", "Nakit", "Secmek", "Tirmanmak", "Kesmek",
+                       "Sevimli", "Tehlikeli", "Silmek", "Olmek", "Pahali", "Aciklamak", "Doldurmak" };
 
-String B1_ingilizce[] = { "advice", "art", "attack", "blood", "destroy", "engine", "import", "low",
-                          "peace", "poison", "population", "publish", "remove", "result", "search",
-                          "space", "tool", "trade", "truck", "wide" };
+String B1_ingilizce[] = { "Advice", "Art", "Attack", "Blood", "Destroy", "Engine", "Import", "Low",
+                          "Peace", "Poison", "Population", "Publish", "Remove", "Result", "Search",
+                          "Space", "Tool", "Trade", "Truck", "Wide" };
 
-String B1_turkce[] = { "tavsiye", "sanat", "saldiri", "kan", "yikmak", "motor", "ithalat", "dusuk",
-                       "baris", "zehir", "populasyon", "yayinlamak", "kaldirmak", "sonuc", "arastirmak",
-                       "bosluk", "alet", "ticaret", "kamyon", "genis" };
+String B1_turkce[] = { "Tavsiye", "Sanat", "Saldiri", "Kan", "Yikmak", "Motor", "Ithalat", "Dusuk",
+                       "Baris", "Zehir", "Populasyon", "Yayinlamak", "Kaldirmak", "Sonuc", "Arastirmak",
+                       "Bosluk", "Alet", "Ticaret", "Kamyon", "Genis" };
 
 
 //uygulamadaki değişkenler
@@ -96,7 +96,7 @@ void loop() {
     if (p.x > 695 && p.x < 780 && p.y > 400 && p.y < 620 && sayfa == 1) {
       sayfa = 2;
       tft.fillScreen(0x0000);
-      tft.setCursor(60, 70);
+      tft.setCursor(60, 100);
       tft.setTextColor(0xFFFF);
       tft.setTextSize(4);
       tft.print("Seviye Seciniz");
@@ -116,9 +116,9 @@ void loop() {
       tft.setTextSize(4);
       tft.print("B1");
 
-      tft.drawRect(3, 20, 78, 40, 0xFFFF);
+      tft.fillRect(0, 20, 78, 40, 0xFFFF);
       tft.setCursor(5, 30);
-      tft.setTextColor(0xFFFF);
+      tft.setTextColor(0x0000);
       tft.setTextSize(3);
       tft.print("Geri");
       p.x = 0;
@@ -159,7 +159,7 @@ void loop() {
     if (p.x < 313 && p.x > 224 && p.y < 240 && p.y > 163 && sayfa == 3) {
       sayfa = 2;
       tft.fillScreen(0x0000);
-      tft.setCursor(60, 70);
+      tft.setCursor(60, 100);
       tft.setTextColor(0xFFFF);
       tft.setTextSize(4);
       tft.print("Seviye Seciniz");
@@ -179,11 +179,12 @@ void loop() {
       tft.setTextSize(4);
       tft.print("B1");
 
-      tft.drawRect(3, 20, 78, 40, 0xFFFF);
+      tft.fillRect(0, 20, 78, 40, 0xFFFF);
       tft.setCursor(5, 30);
-      tft.setTextColor(0xFFFF);
+      tft.setTextColor(0x0000);
       tft.setTextSize(3);
       tft.print("Geri");
+
 
       cevap_bekleme = 0;
       skor = 0;
@@ -194,9 +195,9 @@ void loop() {
     if (p.x < 313 && p.x > 224 && p.y < 240 && p.y > 163 && sayfa == 2) {
       sayfa = 1;
 
-      tft.drawRect(3, 20, 78, 40, 0xFFFF);
+      tft.fillRect(0, 20, 78, 40, 0xFFFF);
       tft.setCursor(5, 30);
-      tft.setTextColor(0xFFFF);
+      tft.setTextColor(0x0000);
       tft.setTextSize(3);
       tft.print("Geri");
 
@@ -232,33 +233,33 @@ void loop() {
       skor++;
       cevap_bekleme = 0;
 
-         tft.setCursor(330, 70);
-            tft.setTextColor( 0xF81F);
-            tft.setTextSize(3);
-            tft.print("Dogru");
-            delay(1000);
+      tft.setCursor(330, 70);
+      tft.setTextColor(0xF81F);
+      tft.setTextSize(3);
+      tft.print("Dogru");
+      delay(1000);
 
     } else if (yer == 1 && p.x < 873 && p.x > 805 && p.y < 528 && p.y > 348 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 1. şıkta olduğu soruda 2. şıkka dokunulduğunda olacaklar
 
       skor = 0;
       cevap_bekleme = 0;
 
-         tft.setCursor(330, 70);
-            tft.setTextColor( 0x07FF);
-            tft.setTextSize(3);
-            tft.print("Yanlis");
-            delay(1000);
+      tft.setCursor(330, 70);
+      tft.setTextColor(0x07FF);
+      tft.setTextSize(3);
+      tft.print("Yanlis");
+      delay(1000);
 
     } else if (yer == 1 && p.x < 709 && p.x > 640 && p.y < 760 && p.y > 574 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 1. şıkta olduğu soruda 3. şıkka dokunulduğunda olacaklar
 
       skor = 0;
       cevap_bekleme = 0;
 
-         tft.setCursor(330, 70);
-            tft.setTextColor( 0x07FF);
-            tft.setTextSize(3);
-            tft.print("Yanlis");
-            delay(1000);
+      tft.setCursor(330, 70);
+      tft.setTextColor(0x07FF);
+      tft.setTextSize(3);
+      tft.print("Yanlis");
+      delay(1000);
     }
 
 
@@ -269,32 +270,32 @@ void loop() {
       skor++;
       cevap_bekleme = 0;
 
-       tft.setCursor(330, 70);
-            tft.setTextColor(0xF81F);
-            tft.setTextSize(3);
-            tft.print("Dogru");
-            delay(1000);
+      tft.setCursor(330, 70);
+      tft.setTextColor(0xF81F);
+      tft.setTextSize(3);
+      tft.print("Dogru");
+      delay(1000);
 
     } else if (yer == 2 && p.x < 709 && p.x > 646 && p.y < 372 && p.y > 189 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 2. şıkta olduğu soruda 1. şıkka dokunulduğunda olacaklar
 
       skor = 0;
       cevap_bekleme = 0;
 
-       tft.setCursor(330, 70);
-            tft.setTextColor(0x07FF);
-            tft.setTextSize(3);
-            tft.print("Yanlis");
-            delay(1000);
+      tft.setCursor(330, 70);
+      tft.setTextColor(0x07FF);
+      tft.setTextSize(3);
+      tft.print("Yanlis");
+      delay(1000);
     } else if (yer == 2 && p.x < 709 && p.x > 640 && p.y < 760 && p.y > 574 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 2. şıkta olduğu soruda 3. şıkka dokunulduğunda olacaklar
 
       skor = 0;
       cevap_bekleme = 0;
 
-         tft.setCursor(330, 70);
-            tft.setTextColor(0x07FF);
-            tft.setTextSize(3);
-            tft.print("Yanlis");
-            delay(1000);
+      tft.setCursor(330, 70);
+      tft.setTextColor(0x07FF);
+      tft.setTextSize(3);
+      tft.print("Yanlis");
+      delay(1000);
     }
 
 
@@ -308,31 +309,31 @@ void loop() {
       cevap_bekleme = 0;
 
       tft.setCursor(330, 70);
-            tft.setTextColor(0xF81F);
-            tft.setTextSize(3);
-            tft.print("Dogru");
-            delay(1000);
+      tft.setTextColor(0xF81F);
+      tft.setTextSize(3);
+      tft.print("Dogru");
+      delay(1000);
 
     } else if (yer == 3 && p.x < 709 && p.x > 646 && p.y < 372 && p.y > 189 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 3. şıkta olduğu soruda 1. şıkka dokunulduğunda olacaklar
 
       skor = 0;
       cevap_bekleme = 0;
 
-       tft.setCursor(330, 70);
-            tft.setTextColor(0x07FF);
-            tft.setTextSize(3);
-            tft.print("Yanlis");
-            delay(1000);
+      tft.setCursor(330, 70);
+      tft.setTextColor(0x07FF);
+      tft.setTextSize(3);
+      tft.print("Yanlis");
+      delay(1000);
     } else if (yer == 3 && p.x < 873 && p.x > 805 && p.y < 528 && p.y > 348 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 3. şıkta olduğu soruda 2. şıkka dokunulduğunda olacaklar
 
       skor--;
       cevap_bekleme = 0;
 
-       tft.setCursor(330, 70);
-            tft.setTextColor(0x07FF);
-            tft.setTextSize(3);
-            tft.print("Yanlis");
-            delay(1000);
+      tft.setCursor(330, 70);
+      tft.setTextColor(0x07FF);
+      tft.setTextSize(3);
+      tft.print("Yanlis");
+      delay(1000);
     }
 
     if (cevap_bekleme == 0) {  // Soru sayfası açıldıktan sonra cevap verilene kadar sayfanın değişmemesi için
@@ -364,9 +365,9 @@ void loop() {
         if (seviye == 1) {  //A1 seviyesinin soru ekranın
           tft.fillScreen(0x0000);
 
-          tft.drawRect(3, 20, 78, 40, 0xFFFF);
+          tft.fillRect(0, 20, 78, 40, 0xFFFF);
           tft.setCursor(5, 30);
-          tft.setTextColor(0xFFFF);
+          tft.setTextColor(0x0000);
           tft.setTextSize(3);
           tft.print("Geri");
 
@@ -467,9 +468,9 @@ void loop() {
         } else if (seviye == 2) {  //A2 seviyesinin soruları
           tft.fillScreen(0x0000);
 
-          tft.drawRect(3, 20, 78, 40, 0xFFFF);
+          tft.fillRect(0, 20, 78, 40, 0xFFFF);
           tft.setCursor(5, 30);
-          tft.setTextColor(0xFFFF);
+          tft.setTextColor(0x0000);
           tft.setTextSize(3);
           tft.print("Geri");
 
@@ -563,9 +564,9 @@ void loop() {
         } else if (seviye == 3) {  //B1 seviyesinin soruları
           tft.fillScreen(0x0000);
 
-          tft.drawRect(3, 20, 78, 40, 0xFFFF);
+          tft.fillRect(0, 20, 78, 40, 0xFFFF);
           tft.setCursor(5, 30);
-          tft.setTextColor(0xFFFF);
+          tft.setTextColor(0x0000);
           tft.setTextSize(3);
           tft.print("Geri");
 
