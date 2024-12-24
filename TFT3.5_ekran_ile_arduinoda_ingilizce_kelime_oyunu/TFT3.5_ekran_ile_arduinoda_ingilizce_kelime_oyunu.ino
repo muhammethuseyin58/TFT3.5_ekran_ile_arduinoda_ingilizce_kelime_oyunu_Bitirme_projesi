@@ -10,11 +10,11 @@ MCUFRIEND_kbv tft(A3, A2, A1, A0, A4);
 TouchScreen ts = TouchScreen(9, A2, A3, 8, 300);
 
 //Uygulamada kullanılar kelimeler
-String A1_ingilizce[] = { "Know", "Think", "Buy", "Bring", "Catch", "Run", "Drink",
+String A1_ingilizce[] = { "Know", "Think", "Action", "Bring", "Catch", "Run", "Drink",
                           "Swim", "Break", "Forget", "Wear", "Fall", "Eat", "Take", "Lose",
                           "Try", "Hear", "Sit", "Alone", "Angry" };
 
-String A1_turkce[] = { "Bilmek", "Dusunmek", "Satin almak", "Getirmek", "Yakalamak",
+String A1_turkce[] = { "Bilmek", "Dusunmek", "Hareket", "Getirmek", "Yakalamak",
                        "Kosmak", "Icmek", "Yuzmek", "Kirmak", "Unutmak", "Giymek",
                        "Dusmek", "Yemek", "Almak", "Kaybetmek", "Denemek", "Duymak",
                        "Oturmak", "Yalniz", "Kizgin" };
