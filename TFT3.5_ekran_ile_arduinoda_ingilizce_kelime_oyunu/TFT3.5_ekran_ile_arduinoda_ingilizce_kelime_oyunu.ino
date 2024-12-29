@@ -57,13 +57,291 @@ short cevap_bekleme;  //Soru cevap sayfası yüklendikten sonra cevap verilene k
 short onceki_kelime;  // Peşpeşe aynı ingilizce kelime gelmemesi için kullanıldı
 
 
+#pragma region Metotlar
+
+void Geri() {
+  tft.fillRect(0, 25, 78, 40, 0xFFFF);
+  tft.setCursor(5, 35);
+  tft.setTextColor(0x0000);
+  tft.setTextSize(3);
+  tft.print("Geri");
+}
+
+void Skor() {
+  tft.setCursor(330, 30);
+  tft.setTextColor(0xFFFF);
+  tft.setTextSize(3);
+  tft.print("skor=");
+  tft.print(skor);
+}
+
+void Reng(String reng) {
+
+  if (reng == "siyah")
+    tft.setTextColor(0xFFFF);
+  else if (reng == "beyaz") {
+    tft.setTextColor(0x0000);
+  }
+}
+
+void Yazilar(int x, int y, String yazi, String rengi, int boyut) {
+  tft.setCursor(x, y);
+  Reng(rengi);
+  tft.setTextSize(boyut);
+  tft.print(yazi);
+}
+
+void seviyesecim(int Sayfa, int Seviye, int Cevapbekle) {
+  sayfa = Sayfa;
+  seviye = Seviye;
+  cevap_bekleme = Cevapbekle;
+}
+
+void yanlisSilme(int sira) {
+  yanlis_ingilizce[sira] = "bos";
+  yanlis_turkce[sira] = "bos";
+  for (int y = sira; y < yanlis_eleman; y++) {
+
+    yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
+    yanlis_turkce[y] = yanlis_turkce[y + 1];
+  }
+  yanlis_eleman--;
+}
+
+void kelimeKontrolYanlisIle(String seviye, String seviye1) {
+  while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos" || yanlis_turkce[Dsayi] == seviye || yanlis_turkce[Dsayi] == seviye1) {
+    randomSeed(analogRead(A13));
+    Dsayi = random(0, yanlis_eleman);
+    randomSeed(analogRead(A14));
+    Y1sayi = random(0, 20);
+    randomSeed(analogRead(A15));
+    Ysayi = random(0, 20);
+  }
+  onceki_kelime = Dsayi;
+}
+
+void kelimekontrol() {
+  while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi) {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
+    randomSeed(analogRead(A13));
+    Dsayi = random(0, 20);
+    randomSeed(analogRead(A14));
+    Y1sayi = random(0, 20);
+    randomSeed(analogRead(A15));
+    Ysayi = random(0, 20);
+  }
+  onceki_kelime = Dsayi;
+}
+
+void temelRandomYerIle() {
+  randomSeed(analogRead(A13));
+  Dsayi = random(0, 20);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
+  randomSeed(analogRead(A14));
+  Y1sayi = random(0, 20);  // Yanlış olan birinci şık
+  randomSeed(analogRead(A15));
+  Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+  randomSeed(analogRead(A12));
+  yer = random(1, 4);  // Doğru cevabın hangi şıkta olaağını belirler
+}
+
+void temelRandom() {
+  randomSeed(analogRead(A13));
+  Dsayi = random(0, 20);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
+  randomSeed(analogRead(A14));
+  Y1sayi = random(0, 20);  // Yanlış olan birinci şık
+  randomSeed(analogRead(A15));
+  Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+}
+
+void temelRandomYanlisIle() {
+  randomSeed(analogRead(A13));
+  Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
+  randomSeed(analogRead(A14));
+  Y1sayi = random(0, 20);  // Yanlış olan birinci şık
+  randomSeed(analogRead(A15));
+  Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+}
+
+void yer1dogru(String ingilizce, String dturkce, String y1turkce, String yturkce) {
+  Yazilar(100, 80, ingilizce, "siyah", 4);
+
+
+  Yazilar(30, 200, dturkce, "siyah", 3);
+
+
+  Yazilar(130, 270, y1turkce, "siyah", 3);
+
+
+  Yazilar(260, 200, yturkce, "siyah", 3);
+}
+void yer1yanlis(String ingilizce, String dturkce, String y1turkce, String yturkce) {
+  Yazilar(100, 80, ingilizce, "siyah", 4);
+
+
+  Yazilar(30, 200, dturkce, "siyah", 3);
+
+
+  Yazilar(130, 270, y1turkce, "siyah", 3);
+
+
+  Yazilar(260, 200, yturkce, "siyah", 3);
+
+  hata_soru = true;
+}
+void yer2dogru(String ingilizce, String dturkce, String y1turkce, String yturkce) {
+  Yazilar(100, 80, ingilizce, "siyah", 4);
+
+
+  Yazilar(30, 200, y1turkce, "siyah", 3);
+
+
+  Yazilar(130, 270, dturkce, "siyah", 3);
+
+
+  Yazilar(260, 200, yturkce, "siyah", 3);
+}
+void yer2yanlis(String ingilizce, String dturkce, String y1turkce, String yturkce) {
+  Yazilar(100, 80, ingilizce, "siyah", 4);
+
+
+  Yazilar(30, 200, y1turkce, "siyah", 3);
+
+
+  Yazilar(130, 270, dturkce, "siyah", 3);
+
+
+  Yazilar(260, 200, yturkce, "siyah", 3);
+
+  hata_soru = true;
+}
+void yer3dogru(String ingilizce, String dturkce, String y1turkce, String yturkce) {
+  Yazilar(100, 80, ingilizce, "siyah", 4);
+
+
+  Yazilar(30, 200, y1turkce, "siyah", 3);
+
+
+  Yazilar(130, 270, yturkce, "siyah", 3);
+
+
+  Yazilar(260, 200, dturkce, "siyah", 3);
+}
+void yer3yanlis(String ingilizce, String dturkce, String y1turkce, String yturkce) {
+  Yazilar(100, 80, ingilizce, "siyah", 4);
+
+
+  Yazilar(30, 200, y1turkce, "siyah", 3);
+
+
+  Yazilar(130, 270, yturkce, "siyah", 3);
+
+
+  Yazilar(260, 200, dturkce, "siyah", 3);
+
+  hata_soru = true;
+}
+
+void dogruisaretleme() {
+  skor++;
+  cevap_bekleme = 0;
+
+  if (seviye == 1 && yanlis_eleman >= 1) {
+
+    for (int p = 0; p < yanlis_eleman; p++) {
+
+      if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
+
+        yanlisSilme(p);
+        hata_soru = false;
+
+      } else if (yanlis_ingilizce[p] == A1_ingilizce[Dsayi] && hata_soru == false) {
+
+        yanlisSilme(p);
+      }
+    }
+
+
+  } else if (seviye == 2 && yanlis_eleman >= 1) {
+    for (int p = 0; p <= yanlis_eleman; p++) {
+      if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
+
+        yanlisSilme(p);
+
+        hata_soru = false;
+
+      } else if (yanlis_ingilizce[p] == A2_ingilizce[Dsayi] && hata_soru == false) {
+
+        yanlisSilme(p);
+      }
+    }
+
+  } else if (seviye == 3 && yanlis_eleman >= 1) {
+    for (int p = 0; p <= yanlis_eleman; p++) {
+      if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
+
+        yanlisSilme(p);
+
+        hata_soru = false;
+
+      } else if (yanlis_ingilizce[p] == B1_ingilizce[Dsayi] && hata_soru == false) {
+
+        yanlisSilme(p);
+      }
+    }
+  }
+
+  tft.setCursor(330, 70);
+  tft.setTextColor(0xF81F);
+  tft.setTextSize(3);
+  tft.print("Dogru");
+  delay(1000);
+}
+
+void yanlisisaretleme() {
+  if (skor > 0)
+    skor = 0;
+  cevap_bekleme = 0;
+  for (int i = 0; i < 21; i++) {
+    if (yanlis_ingilizce[i] != A1_ingilizce[Dsayi]) {
+      kontrol1 = true;
+
+    } else {
+      kontrol1 = false;
+      break;
+    }
+  }
+  if (seviye == 1 && kontrol1 == true) {
+
+    yanlis_ingilizce[yanlis_eleman] = A1_ingilizce[Dsayi];
+    yanlis_turkce[yanlis_eleman] = A1_turkce[Dsayi];
+    kontrol1 = false;
+    yanlis_eleman++;
+  } else if (seviye == 2 && kontrol1 == true) {
+    yanlis_ingilizce[yanlis_eleman] = A2_ingilizce[Dsayi];
+    yanlis_turkce[yanlis_eleman] = A2_turkce[Dsayi];
+    kontrol1 = false;
+    yanlis_eleman++;
+  } else if (seviye == 3 && kontrol1 == true) {
+    yanlis_ingilizce[yanlis_eleman] = B1_ingilizce[Dsayi];
+    yanlis_turkce[yanlis_eleman] = B1_turkce[Dsayi];
+    kontrol1 = false;
+    yanlis_eleman++;
+  }
+
+  tft.setCursor(330, 70);
+  tft.setTextColor(0x07FF);
+  tft.setTextSize(3);
+  tft.print("Yanlis");
+  delay(1000);
+}
+
+#pragma endregion MetotBitis
+
 void setup() {
   // Ekran ve arduino kart bağlantıları
   tft.reset();
   uint8_t ID = tft.readID();
   tft.begin(ID);
   Serial.begin(9600);
-
 
   sayfa = 1;
   skor = 0;
@@ -72,25 +350,16 @@ void setup() {
   //Giriş sayfası
   tft.setRotation(3);
   tft.fillScreen(0x0000);
-  tft.setCursor(40, 40);
-  tft.setTextColor(0xFFFF);
-  tft.setTextSize(4);
-  tft.print("ingilizce kelime");
 
-  tft.setCursor(170, 90);
-  tft.setTextColor(0xFFFF);
-  tft.setTextSize(4);
-  tft.print("oyunu");
+  Yazilar(40, 40, "ingilizce kelime", "siyah", 4);
+
+  Yazilar(170, 90, "oyunu", "siyah", 4);
 
   tft.drawRect(140, 205, 150, 60, 0xFFFF);
-  tft.setCursor(160, 220);
-  tft.setTextColor(0xFFFF);
-  tft.setTextSize(4);
-  tft.print("Basla");
+  Yazilar(160, 220, "Basla", "siyah", 4);
 }
 
 void loop() {
-
 
   TSPoint p = ts.getPoint();  //Ekranda dokunulan kısımdaki pixelin x ve y kordinatını almak için
 
@@ -98,70 +367,47 @@ void loop() {
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
 
-
-
     delay(100);
-
 
     //Giriş sayfasından seviye seçim sayfasına geçiş
     if (p.x > 660 && p.x < 805 && p.y > 372 && p.y < 639 && sayfa == 1) {
       sayfa = 2;
       tft.fillScreen(0x0000);
-      tft.setCursor(60, 100);
-      tft.setTextColor(0xFFFF);
-      tft.setTextSize(4);
-      tft.print("Seviye Seciniz");
+      Yazilar(60, 100, "Seviye Seciniz", "siyah", 4);
 
-      tft.setCursor(80, 200);
-      tft.setTextColor(0xFFFF);
-      tft.setTextSize(4);
-      tft.print("A1");
+      Yazilar(80, 200, "A1", "siyah", 4);
 
-      tft.setCursor(190, 200);
-      tft.setTextColor(0xFFFF);
-      tft.setTextSize(4);
-      tft.print("A2");
+      Yazilar(190, 200, "A2", "siyah", 4);
 
-      tft.setCursor(310, 200);
-      tft.setTextColor(0xFFFF);
-      tft.setTextSize(4);
-      tft.print("B1");
+      Yazilar(310, 200, "B1", "siyah", 4);
 
       tft.fillRect(0, 20, 78, 40, 0xFFFF);
-      tft.setCursor(5, 30);
-      tft.setTextColor(0x0000);
-      tft.setTextSize(3);
-      tft.print("Geri");
+      Yazilar(5, 30, "Geri", "beyaz", 3);
+
       p.x = 0;
       p.y = 0;
     }
-    Serial.println(p.x);
-    Serial.println(p.y);
-    delay(100);
+
+
 
     //Seviye seçme sayfasında yani sayfa 2 de basılan pixelin kordinatına göre seviye seçimi
     if (sayfa == 2) {
       if (p.x > 650 && p.x < 741 && p.y > 290 && p.y < 374) {  //A1 seviyesi
-        sayfa = 3;
-        seviye = 1;
-        cevap_bekleme = 0;
+        seviyesecim(3, 1, 0);
+
         p.x = 0;
         p.y = 0;
       }
 
       else if (p.x > 657 && p.x < 736 && p.y > 475 && p.y < 569) {  //A2 seviyesi
-        sayfa = 3;
-        seviye = 2;
-        cevap_bekleme = 0;
+        seviyesecim(3, 2, 0);
+
         p.x = 0;
         p.y = 0;
       }
 
       else if (p.x > 657 && p.x < 728 && p.y > 679 && p.y < 752) {  //B1 seviyesi
-
-        sayfa = 3;
-        seviye = 3;
-        cevap_bekleme = 0;
+        seviyesecim(3, 3, 0);
 
         p.x = 0;
         p.y = 0;
@@ -172,31 +418,17 @@ void loop() {
     if (p.x < 340 && p.x > 170 && p.y < 310 && p.y > 163 && sayfa == 3) {
       sayfa = 2;
       tft.fillScreen(0x0000);
-      tft.setCursor(60, 100);
-      tft.setTextColor(0xFFFF);
-      tft.setTextSize(4);
-      tft.print("Seviye Seciniz");
+      Yazilar(60, 100, "Seviye Seciniz", "siyah", 4);
 
-      tft.setCursor(80, 200);
-      tft.setTextColor(0xFFFF);
-      tft.setTextSize(4);
-      tft.print("A1");
+      Yazilar(80, 200, "A1", "siyah", 4);
 
-      tft.setCursor(190, 200);
-      tft.setTextColor(0xFFFF);
-      tft.setTextSize(4);
-      tft.print("A2");
+      Yazilar(190, 200, "A2", "siyah", 4);
 
-      tft.setCursor(310, 200);
-      tft.setTextColor(0xFFFF);
-      tft.setTextSize(4);
-      tft.print("B1");
+      Yazilar(310, 200, "B1", "siyah", 4);
 
-      tft.fillRect(0, 20, 78, 40, 0xFFFF);
-      tft.setCursor(5, 30);
-      tft.setTextColor(0x0000);
-      tft.setTextSize(3);
-      tft.print("Geri");
+      Geri();
+      p.x = 0;
+      p.y = 0;
 
       for (int i = 0; i < 20; i++) {
         yanlis_ingilizce[i] = "bos";
@@ -204,7 +436,6 @@ void loop() {
         yanlis_eleman = 0;
         yanlis_sayac = 0;
       }
-
 
       cevap_bekleme = 0;
       skor = 0;
@@ -215,1280 +446,188 @@ void loop() {
     if (p.x < 340 && p.x > 170 && p.y < 310 && p.y > 163 && sayfa == 2) {
       sayfa = 1;
 
-      tft.fillRect(0, 20, 78, 40, 0xFFFF);
-      tft.setCursor(5, 30);
-      tft.setTextColor(0x0000);
-      tft.setTextSize(3);
-      tft.print("Geri");
-
       tft.setRotation(3);
       tft.fillScreen(0x0000);
-      tft.setCursor(40, 40);
-      tft.setTextColor(0xFFFF);
-      tft.setTextSize(4);
-      tft.print("ingilizce kelime");
 
-      tft.setCursor(170, 90);
-      tft.setTextColor(0xFFFF);
-      tft.setTextSize(4);
-      tft.print("oyunu");
+      Yazilar(40, 40, "ingilizce kelime", "siyah", 4);
+
+      Yazilar(170, 90, "oyunu", "siyah", 4);
 
       tft.drawRect(140, 205, 150, 60, 0xFFFF);
-      tft.setCursor(160, 220);
-      tft.setTextColor(0xFFFF);
-      tft.setTextSize(4);
-      tft.print("Basla");
+      Yazilar(160, 220, "Basla", "siyah", 4);
 
       cevap_bekleme = 0;
       skor = 0;
       p.x = 0;
       p.y = 0;
-    } 
+    }
+
 
     /* Cevaba dokunduktan sonra pixel kordinatına göre doğru yanlış kontrolü için 
     not:cevap kontrolü soru kodlarında önce yazılmıştır çünkü soru kodlarından sonra yazıldığı zaman cevaba 2 defa tıklandıktan sonra diğer soru sayfası açılıyordu.*/
     if (yer == 1 && p.x < 709 && p.x > 646 && p.y < 372 && p.y > 189 && sayfa == 3 && cevap_bekleme == 1) {  //doğru cevabın 1. şıkta olduğu soruda doğru şıkka dokunulduğunda olacaklar
-
-
-      skor++;
-      cevap_bekleme = 0;
-
-      if (seviye == 1 && yanlis_eleman >= 1) {
-
-        for (int p = 0; p < yanlis_eleman; p++) {
-
-          if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
-
-
-
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-
-
-
-
-            yanlis_eleman--;
-            hata_soru = false;
-
-          } else if (yanlis_ingilizce[p] == A1_ingilizce[Dsayi] && hata_soru == false) {
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-            yanlis_eleman--;
-          }
-        }
-
-
-      } else if (seviye == 2 && yanlis_eleman >= 1) {
-        for (int p = 0; p <= yanlis_eleman; p++) {
-          if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
-
-
-
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-
-
-
-
-            yanlis_eleman--;
-            hata_soru = false;
-
-          } else if (yanlis_ingilizce[p] == A2_ingilizce[Dsayi] && hata_soru == false) {
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-            yanlis_eleman--;
-          }
-        }
-
-      } else if (seviye == 3 && yanlis_eleman >= 1) {
-        for (int p = 0; p <= yanlis_eleman; p++) {
-          if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
-
-
-
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-
-
-
-
-            yanlis_eleman--;
-            hata_soru = false;
-
-          } else if (yanlis_ingilizce[p] == B1_ingilizce[Dsayi] && hata_soru == false) {
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-            yanlis_eleman--;
-          }
-        }
-      }
-
-      tft.setCursor(330, 70);
-      tft.setTextColor(0xF81F);
-      tft.setTextSize(3);
-      tft.print("Dogru");
-      delay(1000);
-
+      dogruisaretleme();
     } else if (yer == 1 && p.x < 873 && p.x > 805 && p.y < 528 && p.y > 348 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 1. şıkta olduğu soruda 2. şıkka dokunulduğunda olacaklar
-      if (skor > 0)
-        skor = 0;
-      cevap_bekleme = 0;
-      for (int i = 0; i < 21; i++) {
-        if (yanlis_ingilizce[i] != A1_ingilizce[Dsayi]) {
-          kontrol1 = true;
-
-        } else {
-          kontrol1 = false;
-          break;
-        }
-      }
-      if (seviye == 1 && kontrol1 == true) {
-
-        yanlis_ingilizce[yanlis_eleman] = A1_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = A1_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      } else if (seviye == 2 && kontrol1 == true) {
-        yanlis_ingilizce[yanlis_eleman] = A2_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = A2_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      } else if (seviye == 3 && kontrol1 == true) {
-        yanlis_ingilizce[yanlis_eleman] = B1_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = B1_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      }
-
-      tft.setCursor(330, 70);
-      tft.setTextColor(0x07FF);
-      tft.setTextSize(3);
-      tft.print("Yanlis");
-      delay(1000);
-
+      yanlisisaretleme();
     } else if (yer == 1 && p.x < 709 && p.x > 640 && p.y < 760 && p.y > 574 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 1. şıkta olduğu soruda 3. şıkka dokunulduğunda olacaklar
-      if (skor > 0)
-        skor = 0;
-      cevap_bekleme = 0;
-      for (int i = 0; i < 21; i++) {
-        if (yanlis_ingilizce[i] != A1_ingilizce[Dsayi]) {
-          kontrol1 = true;
-
-        } else {
-          kontrol1 = false;
-          break;
-        }
-      }
-      if (seviye == 1 && kontrol1 == true) {
-
-        yanlis_ingilizce[yanlis_eleman] = A1_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = A1_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      } else if (seviye == 2 && kontrol1 == true) {
-        yanlis_ingilizce[yanlis_eleman] = A2_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = A2_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      } else if (seviye == 3 && kontrol1 == true) {
-        yanlis_ingilizce[yanlis_eleman] = B1_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = B1_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      }
-      tft.setCursor(330, 70);
-      tft.setTextColor(0x07FF);
-      tft.setTextSize(3);
-      tft.print("Yanlis");
-      delay(1000);
+      yanlisisaretleme();
     }
-
-
-
 
     else if (yer == 2 && p.x < 873 && p.x > 805 && p.y < 528 && p.y > 348 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 2. şıkta olduğu soruda doğru şıkka dokunulduğunda olacaklar
-
-      skor++;
-      cevap_bekleme = 0;
-
-      if (seviye == 1 && yanlis_eleman >= 1) {
-
-        for (int p = 0; p < yanlis_eleman; p++) {
-
-          if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
-
-
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-
-
-
-            yanlis_eleman--;
-            hata_soru = false;
-
-          } else if (yanlis_ingilizce[p] == A1_ingilizce[Dsayi] && hata_soru == false) {
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-            yanlis_eleman--;
-          }
-        }
-
-
-      } else if (seviye == 2 && yanlis_eleman >= 1) {
-        for (int p = 0; p <= yanlis_eleman; p++) {
-          if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
-
-
-
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-
-
-
-            yanlis_eleman--;
-            hata_soru = false;
-
-          } else if (yanlis_ingilizce[p] == A2_ingilizce[Dsayi] && hata_soru == false) {
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-            yanlis_eleman--;
-          }
-        }
-
-      } else if (seviye == 3 && yanlis_eleman >= 1) {
-        for (int p = 0; p <= yanlis_eleman; p++) {
-          if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
-
-
-
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-
-
-
-            yanlis_eleman--;
-            hata_soru = false;
-
-          } else if (yanlis_ingilizce[p] == B1_ingilizce[Dsayi] && hata_soru == false) {
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-            yanlis_eleman--;
-          }
-        }
-      }
-
-
-      tft.setCursor(330, 70);
-      tft.setTextColor(0xF81F);
-      tft.setTextSize(3);
-      tft.print("Dogru");
-      delay(1000);
-
+      dogruisaretleme();
     } else if (yer == 2 && p.x < 709 && p.x > 646 && p.y < 372 && p.y > 189 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 2. şıkta olduğu soruda 1. şıkka dokunulduğunda olacaklar
-      if (skor > 0)
-        skor = 0;
-      cevap_bekleme = 0;
-
-      for (int i = 0; i < 21; i++) {
-        if (yanlis_ingilizce[i] != A1_ingilizce[Dsayi]) {
-          kontrol1 = true;
-
-        } else {
-          kontrol1 = false;
-          break;
-        }
-      }
-      if (seviye == 1 && kontrol1 == true) {
-
-        yanlis_ingilizce[yanlis_eleman] = A1_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = A1_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      } else if (seviye == 2 && kontrol1 == true) {
-        yanlis_ingilizce[yanlis_eleman] = A2_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = A2_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      } else if (seviye == 3 && kontrol1 == true) {
-        yanlis_ingilizce[yanlis_eleman] = B1_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = B1_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      }
-
-      tft.setCursor(330, 70);
-      tft.setTextColor(0x07FF);
-      tft.setTextSize(3);
-      tft.print("Yanlis");
-      delay(1000);
-
+      yanlisisaretleme();
     } else if (yer == 2 && p.x < 709 && p.x > 640 && p.y < 760 && p.y > 574 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 2. şıkta olduğu soruda 3. şıkka dokunulduğunda olacaklar
-      if (skor > 0)
-        skor = 0;
-      cevap_bekleme = 0;
-
-      for (int i = 0; i < 21; i++) {
-        if (yanlis_ingilizce[i] != A1_ingilizce[Dsayi]) {
-          kontrol1 = true;
-
-        } else {
-          kontrol1 = false;
-          break;
-        }
-      }
-      if (seviye == 1 && kontrol1 == true) {
-
-        yanlis_ingilizce[yanlis_eleman] = A1_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = A1_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      } else if (seviye == 2 && kontrol1 == true) {
-        yanlis_ingilizce[yanlis_eleman] = A2_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = A2_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      } else if (seviye == 3 && kontrol1 == true) {
-        yanlis_ingilizce[yanlis_eleman] = B1_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = B1_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      }
-
-      tft.setCursor(330, 70);
-      tft.setTextColor(0x07FF);
-      tft.setTextSize(3);
-      tft.print("Yanlis");
-      delay(1000);
+      yanlisisaretleme();
     }
 
-
-
-
-
-
     else if (yer == 3 && p.x < 709 && p.x > 640 && p.y < 760 && p.y > 574 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 3. şıkta olduğu soruda doğru şıkka dokunulduğunda olacaklar
-
-      skor++;
-      cevap_bekleme = 0;
-
-      if (seviye == 1 && yanlis_eleman >= 1) {
-
-        for (int p = 0; p < yanlis_eleman; p++) {
-
-          if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
-
-
-
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-
-
-
-
-            yanlis_eleman--;
-            hata_soru = false;
-
-          } else if (yanlis_ingilizce[p] == A1_ingilizce[Dsayi] && hata_soru == false) {
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-            yanlis_eleman--;
-          }
-        }
-
-
-      } else if (seviye == 2 && yanlis_eleman >= 1) {
-        for (int p = 0; p <= yanlis_eleman; p++) {
-          if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
-
-
-
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-
-
-
-
-            yanlis_eleman--;
-            hata_soru = false;
-
-          } else if (yanlis_ingilizce[p] == A2_ingilizce[Dsayi] && hata_soru == false) {
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-            yanlis_eleman--;
-          }
-        }
-
-      } else if (seviye == 3 && yanlis_eleman >= 1) {
-        for (int p = 0; p <= yanlis_eleman; p++) {
-          if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
-
-
-
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-
-
-
-
-            yanlis_eleman--;
-            hata_soru = false;
-
-          } else if (yanlis_ingilizce[p] == B1_ingilizce[Dsayi] && hata_soru == false) {
-
-            yanlis_ingilizce[p] = "bos";
-            yanlis_turkce[p] = "bos";
-            for (int y = p; y < yanlis_eleman; y++) {
-
-              yanlis_ingilizce[y] = yanlis_ingilizce[y + 1];
-              yanlis_turkce[y] = yanlis_turkce[y + 1];
-            }
-            yanlis_eleman--;
-          }
-        }
-      }
-
-      tft.setCursor(330, 70);
-      tft.setTextColor(0xF81F);
-      tft.setTextSize(3);
-      tft.print("Dogru");
-      delay(1000);
-
+      dogruisaretleme();
     } else if (yer == 3 && p.x < 709 && p.x > 646 && p.y < 372 && p.y > 189 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 3. şıkta olduğu soruda 1. şıkka dokunulduğunda olacaklar
-
-      if (skor > 0)
-        skor = 0;
-      cevap_bekleme = 0;
-
-      for (int i = 0; i < 21; i++) {
-        if (yanlis_ingilizce[i] != A1_ingilizce[Dsayi]) {
-          kontrol1 = true;
-
-        } else {
-          kontrol1 = false;
-          break;
-        }
-      }
-      if (seviye == 1 && kontrol1 == true) {
-
-        yanlis_ingilizce[yanlis_eleman] = A1_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = A1_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      } else if (seviye == 2 && kontrol1 == true) {
-        yanlis_ingilizce[yanlis_eleman] = A2_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = A2_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      } else if (seviye == 3 && kontrol1 == true) {
-        yanlis_ingilizce[yanlis_eleman] = B1_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = B1_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      }
-
-      tft.setCursor(330, 70);
-      tft.setTextColor(0x07FF);
-      tft.setTextSize(3);
-      tft.print("Yanlis");
-      delay(1000);
+      yanlisisaretleme();
     } else if (yer == 3 && p.x < 873 && p.x > 805 && p.y < 528 && p.y > 348 && sayfa == 3 && cevap_bekleme == 1) {  //Doğru cevabın 3. şıkta olduğu soruda 2. şıkka dokunulduğunda olacaklar
-      if (skor > 0)
-        skor--;
-      cevap_bekleme = 0;
-
-      for (int i = 0; i < 21; i++) {
-        if (yanlis_ingilizce[i] != A1_ingilizce[Dsayi]) {
-          kontrol1 = true;
-
-        } else {
-          kontrol1 = false;
-          break;
-        }
-      }
-      if (seviye == 1 && kontrol1 == true) {
-
-        yanlis_ingilizce[yanlis_eleman] = A1_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = A1_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      } else if (seviye == 2 && kontrol1 == true) {
-        yanlis_ingilizce[yanlis_eleman] = A2_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = A2_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      } else if (seviye == 3 && kontrol1 == true) {
-        yanlis_ingilizce[yanlis_eleman] = B1_ingilizce[Dsayi];
-        yanlis_turkce[yanlis_eleman] = B1_turkce[Dsayi];
-        kontrol1 = false;
-        yanlis_eleman++;
-      }
-
-      tft.setCursor(330, 70);
-      tft.setTextColor(0x07FF);
-      tft.setTextSize(3);
-      tft.print("Yanlis");
-      delay(1000);
+      yanlisisaretleme();
     }
 
     if (cevap_bekleme == 0) {  // Soru sayfası açıldıktan sonra cevap verilene kadar sayfanın değişmemesi için
 
       if (sayfa == 3) {
-        for (int u = 0; u < 20; u++) {
-          Serial.print(yanlis_ingilizce[u] + ",");
-        }
-        Serial.println(" ");
-        Serial.print("eleman:");
-        Serial.println(yanlis_eleman);
-        Serial.print("sayac:");
-        Serial.println(yanlis_sayac);
-      }
-
-      if (sayfa == 3) {
         //Dizi den kelime seçmek için random komutunu kullanıyorum
         cevap_bekleme = 1;
 
-        randomSeed(analogRead(A13));
-        Dsayi = random(0, 20);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-        randomSeed(analogRead(A14));
-        Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-        randomSeed(analogRead(A15));
-        Ysayi = random(0, 20);  // Yanlış olan ikinci şık
-        randomSeed(analogRead(A12));
-        yer = random(1, 4);  // Doğru cevabın hangi şıkta olaağını belirler
+        temelRandomYerIle();
 
-
-
-        while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi) {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-          randomSeed(analogRead(A13));
-          Dsayi = random(0, 20);
-          randomSeed(analogRead(A14));
-          Y1sayi = random(0, 20);
-          randomSeed(analogRead(A15));
-          Ysayi = random(0, 20);
-        }
-        onceki_kelime = Dsayi;
-
-
-
-
-
+        kelimekontrol();
+        Serial.println("girdi1");
+        Serial.println("girdi2");
+        Serial.println("girdi3");
 
         if (seviye == 1) {  //A1 seviyesinin soru ekranı
           tft.fillScreen(0x0000);
 
-          tft.fillRect(0, 20, 78, 40, 0xFFFF);
-          tft.setCursor(5, 30);
-          tft.setTextColor(0x0000);
-          tft.setTextSize(3);
-          tft.print("Geri");
-
+          Geri();
 
           if (yer == 1) {  // A1 seviyesinde doğru cevap 1. şıkta olan soru komutları
-            tft.setCursor(330, 30);
-            tft.setTextColor(0xFFFF);
-            tft.setTextSize(3);
-            tft.print("skor=");
-            tft.print(skor);
-
-
-
+            Skor();
 
             if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 4) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A1_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-
+                yer1dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
 
               } else {
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-                hata_soru = true;
+                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
               }
-
             } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
 
               if (yanlis_sayac < 3) {
                 yanlis_sayac++;
 
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A1_ingilizce[Dsayi]);
+                yer1dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
               } else {
 
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
 
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-                hata_soru = true;
+                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
               }
-
-
-
             } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 2) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A1_ingilizce[Dsayi]);
+                yer1dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
               } else {
 
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
 
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-                hata_soru = true;
+                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
               }
             } else {
-              randomSeed(analogRead(A13));
-              Dsayi = random(0, 20);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-              randomSeed(analogRead(A14));
-              Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-              randomSeed(analogRead(A15));
-              Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+              temelRandom();
 
+              kelimekontrol();
 
-
-
-              while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi) {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, 20);
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);
-              }
-              onceki_kelime = Dsayi;
-
-
-              tft.setCursor(100, 80);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(4);
-              tft.print(A1_ingilizce[Dsayi]);
-
-              tft.setCursor(30, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A1_turkce[Dsayi]);
-
-              tft.setCursor(130, 270);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A1_turkce[Y1sayi]);
-
-              tft.setCursor(260, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A1_turkce[Ysayi]);
+              yer1dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
             }
-
-
           } else if (yer == 2) {  // A1 seviyesinde doğru cevap 2. şıkta olan soru komutları
-
-            tft.setCursor(330, 30);
-            tft.setTextColor(0xFFFF);
-            tft.setTextSize(3);
-            tft.print("skor=");
-            tft.print(skor);
-
+            Skor();
 
             if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 4) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A1_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-
+                yer2dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
 
               } else {
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-                hata_soru = true;
+                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
               }
 
             } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
 
               if (yanlis_sayac < 3) {
                 yanlis_sayac++;
+                yer2dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
 
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A1_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
               } else {
 
-                yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-                hata_soru = true;
+                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
               }
-
-
-
             } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 2) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A1_ingilizce[Dsayi]);
+                yer2dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
               } else {
 
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-                hata_soru = true;
+                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
               }
             } else {
-              randomSeed(analogRead(A13));
-              Dsayi = random(0, 20);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-              randomSeed(analogRead(A14));
-              Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-              randomSeed(analogRead(A15));
-              Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+              temelRandom();
 
+              kelimekontrol();
 
-
-
-              while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi) {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, 20);
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);
-              }
-              onceki_kelime = Dsayi;
-
-
-              tft.setCursor(100, 80);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(4);
-              tft.print(A1_ingilizce[Dsayi]);
-
-              tft.setCursor(30, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A1_turkce[Y1sayi]);
-
-              tft.setCursor(130, 270);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A1_turkce[Dsayi]);
-
-              tft.setCursor(260, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A1_turkce[Ysayi]);
+              yer2dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
             }
-
-
           } else if (yer == 3) {  // A1 seviyesinde doğru cevap 3. şıkta olan soru komutları
-
-            tft.setCursor(330, 30);
-            tft.setTextColor(0xFFFF);
-            tft.setTextSize(3);
-            tft.print("skor=");
-            tft.print(skor);
-
+            Skor();
 
             if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 4) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A1_ingilizce[Dsayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Dsayi]);
-
+                yer3dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
 
               } else {
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-                hata_soru = true;
+                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
               }
 
             } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
@@ -1496,1790 +635,377 @@ void loop() {
               if (yanlis_sayac < 3) {
                 yanlis_sayac++;
 
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A1_ingilizce[Dsayi]);
+                yer3dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Dsayi]);
               } else {
 
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-                hata_soru = true;
+                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
               }
-
-
-
             } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 2) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A1_ingilizce[Dsayi]);
+                yer3dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Dsayi]);
-                hata_soru = true;
               } else {
 
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
+
+                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
+
+                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
 
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A1_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
+                hata_soru = true;
               }
             } else {
-              randomSeed(analogRead(A13));
-              Dsayi = random(0, 20);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-              randomSeed(analogRead(A14));
-              Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-              randomSeed(analogRead(A15));
-              Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+              temelRandom();
 
+              kelimekontrol();
 
-
-
-              while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi) {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, 20);
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);
-              }
-              onceki_kelime = Dsayi;
-
-
-              tft.setCursor(100, 80);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(4);
-              tft.print(A1_ingilizce[Dsayi]);
-
-              tft.setCursor(30, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A1_turkce[Y1sayi]);
-
-              tft.setCursor(130, 270);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A1_turkce[Ysayi]);
-
-              tft.setCursor(260, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A1_turkce[Dsayi]);
+              yer3dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
             }
           }
-        } else if (seviye == 2) {  //A2 seviyesinin soru ekranı
+        }
+        if (seviye == 2) {  //A2 seviyesinin soru ekranı
           tft.fillScreen(0x0000);
-
-          tft.fillRect(0, 20, 78, 40, 0xFFFF);
-          tft.setCursor(5, 30);
-          tft.setTextColor(0x0000);
-          tft.setTextSize(3);
-          tft.print("Geri");
-
+          Geri();
+          Serial.println("girdia2");
           if (yer == 1) {  // A2 seviyesinde doğru cevap 1. şıkta olan soru komutları
-            tft.setCursor(330, 30);
-            tft.setTextColor(0xFFFF);
-            tft.setTextSize(3);
-            tft.print("skor=");
-            tft.print(skor);
-
-
+            Skor();
 
             if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 4) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A2_ingilizce[Dsayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-
+                yer1dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
               } else {
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-                hata_soru = true;
+                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
               }
-
             } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
 
               if (yanlis_sayac < 3) {
                 yanlis_sayac++;
 
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A2_ingilizce[Dsayi]);
+                yer1dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
               } else {
 
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
 
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-                hata_soru = true;
+                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
               }
-
-
-
             } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 2) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A2_ingilizce[Dsayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Dsayi]);
+                yer1dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
               } else {
 
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
 
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-                hata_soru = true;
+                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
               }
             } else {
-              randomSeed(analogRead(A13));
-              Dsayi = random(0, 20);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-              randomSeed(analogRead(A14));
-              Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-              randomSeed(analogRead(A15));
-              Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+              temelRandom();
 
+              kelimekontrol();
 
-
-
-              while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi) {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, 20);
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);
-              }
-              onceki_kelime = Dsayi;
-
-
-              tft.setCursor(100, 80);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(4);
-              tft.print(A2_ingilizce[Dsayi]);
-
-              tft.setCursor(30, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A2_turkce[Dsayi]);
-
-              tft.setCursor(130, 270);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A2_turkce[Y1sayi]);
-
-              tft.setCursor(260, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A2_turkce[Ysayi]);
+              yer1dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
             }
-
-
           } else if (yer == 2) {  // A2 seviyesinde doğru cevap 2. şıkta olan soru komutları
-
-            tft.setCursor(330, 30);
-            tft.setTextColor(0xFFFF);
-            tft.setTextSize(3);
-            tft.print("skor=");
-            tft.print(skor);
-
+            Skor();
 
             if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 4) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A2_ingilizce[Dsayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-
+                yer2dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
               } else {
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-                hata_soru = true;
+                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
               }
-
             } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
 
               if (yanlis_sayac < 3) {
                 yanlis_sayac++;
 
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A2_ingilizce[Dsayi]);
+                yer2dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
               } else {
-
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-                hata_soru = true;
+                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
               }
-
-
-
             } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 2) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A2_ingilizce[Dsayi]);
+                yer2dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
               } else {
 
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-                hata_soru = true;
+                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
               }
             } else {
-              randomSeed(analogRead(A13));
-              Dsayi = random(0, 20);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-              randomSeed(analogRead(A14));
-              Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-              randomSeed(analogRead(A15));
-              Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+              temelRandom();
 
+              kelimekontrol();
 
-
-
-              while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi) {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, 20);
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);
-              }
-              onceki_kelime = Dsayi;
-
-
-              tft.setCursor(100, 80);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(4);
-              tft.print(A2_ingilizce[Dsayi]);
-
-              tft.setCursor(30, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A2_turkce[Y1sayi]);
-
-              tft.setCursor(130, 270);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A2_turkce[Dsayi]);
-
-              tft.setCursor(260, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A2_turkce[Ysayi]);
+              yer2dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
             }
-
           } else if (yer == 3) {  // A2 seviyesinde doğru cevap 3. şıkta olan soru komutları
-
-            tft.setCursor(330, 30);
-            tft.setTextColor(0xFFFF);
-            tft.setTextSize(3);
-            tft.print("skor=");
-            tft.print(skor);
+            Skor();
 
             if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 4) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A2_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Dsayi]);
-
+                yer3dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
               } else {
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-                hata_soru = true;
+                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
               }
-
             } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
 
               if (yanlis_sayac < 3) {
                 yanlis_sayac++;
 
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A2_ingilizce[Dsayi]);
+                yer3dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Dsayi]);
               } else {
-
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-                hata_soru = true;
+                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
               }
-
-
-
             } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 2) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(A2_ingilizce[Dsayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
+                yer3dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Dsayi]);
-                hata_soru = true;
               } else {
-
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(A2_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
+                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
               }
             } else {
-              randomSeed(analogRead(A13));
-              Dsayi = random(0, 20);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-              randomSeed(analogRead(A14));
-              Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-              randomSeed(analogRead(A15));
-              Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+              temelRandom();
 
+              kelimekontrol();
 
-
-
-              while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi) {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, 20);
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);
-              }
-              onceki_kelime = Dsayi;
-
-
-              tft.setCursor(100, 80);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(4);
-              tft.print(A2_ingilizce[Dsayi]);
-
-              tft.setCursor(30, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A2_turkce[Y1sayi]);
-
-              tft.setCursor(130, 270);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A2_turkce[Ysayi]);
-
-              tft.setCursor(260, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(A2_turkce[Dsayi]);
+              yer3dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
             }
           }
-        } else if (seviye == 3) { //B1 seviyesinin soru ekranı
+        }
+        if (seviye == 3) {  //B1 seviyesinin soru ekranı
           tft.fillScreen(0x0000);
-
-          tft.fillRect(0, 20, 78, 40, 0xFFFF);
-          tft.setCursor(5, 30);
-          tft.setTextColor(0x0000);
-          tft.setTextSize(3);
-          tft.print("Geri");
+          Geri();
 
           if (yer == 1) {  //  B1 seviyesinde doğru cevap 1. şıkta olan soru komutları
-            tft.setCursor(330, 30);
-            tft.setTextColor(0xFFFF);
-            tft.setTextSize(3);
-            tft.print("skor=");
-            tft.print(skor);
-
-
+            Skor();
 
             if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 4) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(B1_ingilizce[Dsayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-
+                yer1dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
               } else {
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-                hata_soru = true;
+                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
               }
 
             } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
-
               if (yanlis_sayac < 3) {
                 yanlis_sayac++;
 
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(B1_ingilizce[Dsayi]);
+                yer1dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
               } else {
-
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
 
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-                hata_soru = true;
+                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
               }
-
-
-
             } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 2) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(B1_ingilizce[Dsayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Dsayi]);
+                yer1dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
               } else {
-
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
 
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-                hata_soru = true;
+                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
               }
             } else {
-              randomSeed(analogRead(A13));
-              Dsayi = random(0, 20);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-              randomSeed(analogRead(A14));
-              Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-              randomSeed(analogRead(A15));
-              Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+              temelRandom();
 
+              kelimekontrol();
 
-
-
-              while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi) {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, 20);
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);
-              }
-              onceki_kelime = Dsayi;
-
-
-              tft.setCursor(100, 80);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(4);
-              tft.print(B1_ingilizce[Dsayi]);
-
-              tft.setCursor(30, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(B1_turkce[Dsayi]);
-
-              tft.setCursor(130, 270);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(B1_turkce[Y1sayi]);
-
-              tft.setCursor(260, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(B1_turkce[Ysayi]);
+              yer1dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
             }
-
           } else if (yer == 2) {  // B1 seviyesinde doğru cevap 2. şıkta olan soru komutları
-
-            tft.setCursor(330, 30);
-            tft.setTextColor(0xFFFF);
-            tft.setTextSize(3);
-            tft.print("skor=");
-            tft.print(skor);
-
+            Skor();
 
             if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 4) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(B1_ingilizce[Dsayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-
+                yer2dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
               } else {
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-                hata_soru = true;
+                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
               }
-
             } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
-
               if (yanlis_sayac < 3) {
                 yanlis_sayac++;
 
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(B1_ingilizce[Dsayi]);
+                yer2dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
               } else {
-
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-                hata_soru = true;
+                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
               }
-
-
-
             } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 2) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(B1_ingilizce[Dsayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
+                yer2dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
               } else {
-
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-                hata_soru = true;
+                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
               }
             } else {
-              randomSeed(analogRead(A13));
-              Dsayi = random(0, 20);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-              randomSeed(analogRead(A14));
-              Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-              randomSeed(analogRead(A15));
-              Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+              temelRandom();
 
+              kelimekontrol();
 
-
-
-              while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi) {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, 20);
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);
-              }
-              onceki_kelime = Dsayi;
-
-
-              tft.setCursor(100, 80);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(4);
-              tft.print(B1_ingilizce[Dsayi]);
-
-              tft.setCursor(30, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(B1_turkce[Y1sayi]);
-
-              tft.setCursor(130, 270);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(B1_turkce[Dsayi]);
-
-              tft.setCursor(260, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(B1_turkce[Ysayi]);
+              yer2dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
             }
-
-
-
           } else if (yer == 3) {  // B1 seviyesinde doğru cevap 3. şıkta olan soru komutları
-
-            tft.setCursor(330, 30);
-            tft.setTextColor(0xFFFF);
-            tft.setTextSize(3);
-            tft.print("skor=");
-            tft.print(skor);
-
+            Skor();
 
             if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 4) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(B1_ingilizce[Dsayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Dsayi]);
-
+                yer3dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
               } else {
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-                hata_soru = true;
+                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
               }
-
             } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
-
               if (yanlis_sayac < 3) {
                 yanlis_sayac++;
 
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(B1_ingilizce[Dsayi]);
+                yer3dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Dsayi]);
               } else {
-
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
-                hata_soru = true;
+                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
               }
-
-
-
             } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
               if (yanlis_sayac < 2) {
                 yanlis_sayac++;
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(B1_ingilizce[Dsayi]);
 
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
+                yer3dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Dsayi]);
-                hata_soru = true;
               } else {
-
                 yanlis_sayac = 0;
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, yanlis_eleman);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+                temelRandomYanlisIle();
 
+                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
 
-
-
-
-                while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos") {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                  randomSeed(analogRead(A13));
-                  Dsayi = random(0, yanlis_eleman);
-                  randomSeed(analogRead(A14));
-                  Y1sayi = random(0, 20);
-                  randomSeed(analogRead(A15));
-                  Ysayi = random(0, 20);
-                }
-                onceki_kelime = Dsayi;
-
-
-                tft.setCursor(100, 80);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(4);
-                tft.print(yanlis_ingilizce[Dsayi]);
-
-                tft.setCursor(30, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Y1sayi]);
-
-                tft.setCursor(130, 270);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(B1_turkce[Ysayi]);
-
-                tft.setCursor(260, 200);
-                tft.setTextColor(0xFFFF);
-                tft.setTextSize(3);
-                tft.print(yanlis_turkce[Dsayi]);
+                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
               }
             } else {
-              randomSeed(analogRead(A13));
-              Dsayi = random(0, 20);  // İngilizce kelime ve doğru olan şıkkın dizi sırasındaki sayı
-              randomSeed(analogRead(A14));
-              Y1sayi = random(0, 20);  // Yanlış olan birinci şık
-              randomSeed(analogRead(A15));
-              Ysayi = random(0, 20);  // Yanlış olan ikinci şık
+              temelRandom();
 
+              kelimekontrol();
 
-
-
-              while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi) {  // Eğer şıklar aynı olursa ve soru kelimesi önceki soru ile aynı olursa  random komutu ile tekrardan sayı alıyorum
-                randomSeed(analogRead(A13));
-                Dsayi = random(0, 20);
-                randomSeed(analogRead(A14));
-                Y1sayi = random(0, 20);
-                randomSeed(analogRead(A15));
-                Ysayi = random(0, 20);
-              }
-              onceki_kelime = Dsayi;
-
-
-              tft.setCursor(100, 80);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(4);
-              tft.print(B1_ingilizce[Dsayi]);
-
-              tft.setCursor(30, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(B1_turkce[Y1sayi]);
-
-              tft.setCursor(130, 270);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(B1_turkce[Ysayi]);
-
-              tft.setCursor(260, 200);
-              tft.setTextColor(0xFFFF);
-              tft.setTextSize(3);
-              tft.print(B1_turkce[Dsayi]);
+              yer3dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
             }
           }
         }
       }
     }
-   
+
     p.x = 0;
     p.y = 0;
   }
-
-
-   
   delay(100);
 }
-
-
