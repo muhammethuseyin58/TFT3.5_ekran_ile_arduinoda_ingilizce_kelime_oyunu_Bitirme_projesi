@@ -42,6 +42,9 @@ bool kontrol1 = false;
 short yanlis_eleman = 0;
 bool hata_soru = false;
 
+String yanlisKelimeIng;
+String yanlisKelimeTr;
+
 
 //uygulamadaki değişkenler
 short sayfa;   //sayfa değişkeni 1(giriş),2(seviye seçimi)ve 3(soru cevap sayfası) olarak kullanıldı
@@ -106,10 +109,11 @@ void yanlisSilme(int sira) {
     yanlis_turkce[y] = yanlis_turkce[y + 1];
   }
   yanlis_eleman--;
+  yanlis_sayac = 0;
 }
 
 void kelimeKontrolYanlisIle(String seviye, String seviye1) {
-  while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_ingilizce[Dsayi] == "bos" || yanlis_turkce[Dsayi] == seviye || yanlis_turkce[Dsayi] == seviye1) {
+  while (Dsayi == Y1sayi || Dsayi == Ysayi || Ysayi == Y1sayi || onceki_kelime == Dsayi || yanlis_turkce[Dsayi] == seviye || yanlis_turkce[Dsayi] == seviye1) {
     randomSeed(analogRead(A13));
     Dsayi = random(0, yanlis_eleman);
     randomSeed(analogRead(A14));
@@ -118,6 +122,7 @@ void kelimeKontrolYanlisIle(String seviye, String seviye1) {
     Ysayi = random(0, 20);
   }
   onceki_kelime = Dsayi;
+ 
 }
 
 void kelimekontrol() {
@@ -172,6 +177,9 @@ void yer1dogru(String ingilizce, String dturkce, String y1turkce, String yturkce
 
 
   Yazilar(260, 200, yturkce, "siyah", 3);
+
+  yanlisKelimeIng = ingilizce;
+  yanlisKelimeTr = dturkce;
 }
 void yer1yanlis(String ingilizce, String dturkce, String y1turkce, String yturkce) {
   Yazilar(100, 80, ingilizce, "siyah", 4);
@@ -185,6 +193,8 @@ void yer1yanlis(String ingilizce, String dturkce, String y1turkce, String yturkc
 
   Yazilar(260, 200, yturkce, "siyah", 3);
 
+  yanlisKelimeIng = ingilizce;
+  yanlisKelimeTr = dturkce;
   hata_soru = true;
 }
 void yer2dogru(String ingilizce, String dturkce, String y1turkce, String yturkce) {
@@ -198,6 +208,9 @@ void yer2dogru(String ingilizce, String dturkce, String y1turkce, String yturkce
 
 
   Yazilar(260, 200, yturkce, "siyah", 3);
+
+  yanlisKelimeIng = ingilizce;
+  yanlisKelimeTr = dturkce;
 }
 void yer2yanlis(String ingilizce, String dturkce, String y1turkce, String yturkce) {
   Yazilar(100, 80, ingilizce, "siyah", 4);
@@ -211,6 +224,8 @@ void yer2yanlis(String ingilizce, String dturkce, String y1turkce, String yturkc
 
   Yazilar(260, 200, yturkce, "siyah", 3);
 
+  yanlisKelimeIng = ingilizce;
+  yanlisKelimeTr = dturkce;
   hata_soru = true;
 }
 void yer3dogru(String ingilizce, String dturkce, String y1turkce, String yturkce) {
@@ -224,6 +239,9 @@ void yer3dogru(String ingilizce, String dturkce, String y1turkce, String yturkce
 
 
   Yazilar(260, 200, dturkce, "siyah", 3);
+
+  yanlisKelimeIng = ingilizce;
+  yanlisKelimeTr = dturkce;
 }
 void yer3yanlis(String ingilizce, String dturkce, String y1turkce, String yturkce) {
   Yazilar(100, 80, ingilizce, "siyah", 4);
@@ -237,6 +255,8 @@ void yer3yanlis(String ingilizce, String dturkce, String y1turkce, String yturkc
 
   Yazilar(260, 200, dturkce, "siyah", 3);
 
+  yanlisKelimeIng = ingilizce;
+  yanlisKelimeTr = dturkce;
   hata_soru = true;
 }
 
@@ -253,7 +273,7 @@ void dogruisaretleme() {
         yanlisSilme(p);
         hata_soru = false;
 
-      } else if (yanlis_ingilizce[p] == A1_ingilizce[Dsayi] && hata_soru == false) {
+      } else if (yanlis_ingilizce[p] == yanlisKelimeIng && hata_soru == false) {
 
         yanlisSilme(p);
       }
@@ -261,28 +281,30 @@ void dogruisaretleme() {
 
 
   } else if (seviye == 2 && yanlis_eleman >= 1) {
-    for (int p = 0; p <= yanlis_eleman; p++) {
+
+    for (int p = 0; p < yanlis_eleman; p++) {
       if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
 
         yanlisSilme(p);
 
         hata_soru = false;
 
-      } else if (yanlis_ingilizce[p] == A2_ingilizce[Dsayi] && hata_soru == false) {
+      } else if (yanlis_ingilizce[p] == yanlisKelimeIng && hata_soru == false) {
 
         yanlisSilme(p);
       }
     }
 
   } else if (seviye == 3 && yanlis_eleman >= 1) {
-    for (int p = 0; p <= yanlis_eleman; p++) {
+
+    for (int p = 0; p < yanlis_eleman; p++) {
       if (yanlis_ingilizce[p] == yanlis_ingilizce[Dsayi] && hata_soru == true) {
 
         yanlisSilme(p);
 
         hata_soru = false;
 
-      } else if (yanlis_ingilizce[p] == B1_ingilizce[Dsayi] && hata_soru == false) {
+      } else if (yanlis_ingilizce[p] == yanlisKelimeIng && hata_soru == false) {
 
         yanlisSilme(p);
       }
@@ -297,11 +319,13 @@ void dogruisaretleme() {
 }
 
 void yanlisisaretleme() {
+
+
   if (skor > 0)
     skor = 0;
   cevap_bekleme = 0;
   for (int i = 0; i < 21; i++) {
-    if (yanlis_ingilizce[i] != A1_ingilizce[Dsayi]) {
+    if (yanlis_ingilizce[i] != yanlisKelimeIng) {
       kontrol1 = true;
 
     } else {
@@ -309,29 +333,240 @@ void yanlisisaretleme() {
       break;
     }
   }
+
   if (seviye == 1 && kontrol1 == true) {
 
-    yanlis_ingilizce[yanlis_eleman] = A1_ingilizce[Dsayi];
-    yanlis_turkce[yanlis_eleman] = A1_turkce[Dsayi];
+    yanlis_ingilizce[yanlis_eleman] = yanlisKelimeIng;
+    yanlis_turkce[yanlis_eleman] = yanlisKelimeTr;
     kontrol1 = false;
     yanlis_eleman++;
   } else if (seviye == 2 && kontrol1 == true) {
-    yanlis_ingilizce[yanlis_eleman] = A2_ingilizce[Dsayi];
-    yanlis_turkce[yanlis_eleman] = A2_turkce[Dsayi];
+    yanlis_ingilizce[yanlis_eleman] = yanlisKelimeIng;
+    yanlis_turkce[yanlis_eleman] = yanlisKelimeTr;
     kontrol1 = false;
     yanlis_eleman++;
   } else if (seviye == 3 && kontrol1 == true) {
-    yanlis_ingilizce[yanlis_eleman] = B1_ingilizce[Dsayi];
-    yanlis_turkce[yanlis_eleman] = B1_turkce[Dsayi];
+    yanlis_ingilizce[yanlis_eleman] = yanlisKelimeIng;
+    yanlis_turkce[yanlis_eleman] = yanlisKelimeTr;
     kontrol1 = false;
     yanlis_eleman++;
   }
+
 
   tft.setCursor(330, 70);
   tft.setTextColor(0x07FF);
   tft.setTextSize(3);
   tft.print("Yanlis");
   delay(1000);
+}
+
+void yer3Sorular(String TemelDogruIngilizce, String TemelDogruTurkce, String TemelY1Turkce, String TemelYTurkce) {
+  Skor();
+
+
+  if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
+    if (yanlis_sayac < 4) {
+      yanlis_sayac++;
+
+      yer3dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
+
+    } else {
+      yanlis_sayac = 0;
+      temelRandomYanlisIle();
+
+      kelimeKontrolYanlisIle(TemelYTurkce, TemelY1Turkce);
+
+
+
+      yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], TemelY1Turkce, TemelYTurkce);
+    }
+  } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
+    if (yanlis_sayac < 3) {
+      yanlis_sayac++;
+
+      yer3dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
+
+    } else {
+      yanlis_sayac = 0;
+      temelRandomYanlisIle();
+
+      kelimeKontrolYanlisIle(TemelYTurkce, TemelY1Turkce);
+
+      yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], TemelY1Turkce, TemelYTurkce);
+    }
+  } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
+    if (yanlis_sayac < 2) {
+      yanlis_sayac++;
+
+      yer3dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
+
+    } else {
+      yanlis_sayac = 0;
+      temelRandomYanlisIle();
+
+      kelimeKontrolYanlisIle(TemelYTurkce, TemelY1Turkce);
+
+      yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], TemelY1Turkce, TemelYTurkce);
+    }
+  } else {
+    yanlis_sayac = 0;
+    yanlis_eleman = 0;
+    temelRandom();
+
+    kelimekontrol();
+
+    yer3dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
+  }
+}
+
+void yer2Sorular(String TemelDogruIngilizce, String TemelDogruTurkce, String TemelY1Turkce, String TemelYTurkce) {
+  Skor();
+
+
+
+  if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
+    if (yanlis_sayac < 4) {
+      yanlis_sayac++;
+
+      yer2dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
+
+    } else {
+      yanlis_sayac = 0;
+      temelRandomYanlisIle();
+
+      kelimeKontrolYanlisIle(TemelYTurkce, TemelY1Turkce);
+
+
+
+      yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], TemelY1Turkce, TemelYTurkce);
+    }
+  } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
+    if (yanlis_sayac < 3) {
+      yanlis_sayac++;
+
+      yer2dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
+
+    } else {
+      yanlis_sayac = 0;
+      temelRandomYanlisIle();
+
+      kelimeKontrolYanlisIle(TemelYTurkce, TemelY1Turkce);
+
+      yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], TemelY1Turkce, TemelYTurkce);
+    }
+  } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
+    if (yanlis_sayac < 2) {
+      yanlis_sayac++;
+
+      yer2dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
+
+    } else {
+      yanlis_sayac = 0;
+      temelRandomYanlisIle();
+
+      kelimeKontrolYanlisIle(TemelYTurkce, TemelY1Turkce);
+
+      yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], TemelY1Turkce, TemelYTurkce);
+    }
+  } else {
+    yanlis_sayac = 0;
+    yanlis_eleman = 0;
+    temelRandom();
+
+    kelimekontrol();
+
+    yer2dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
+  }
+}
+
+void yer1Sorular(String TemelDogruIngilizce, String TemelDogruTurkce, String TemelY1Turkce, String TemelYTurkce) {
+  Skor();
+
+
+
+  if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
+    if (yanlis_sayac < 4) {
+      yanlis_sayac++;
+
+      yer1dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
+
+
+    } else {
+      yanlis_sayac = 0;
+      temelRandomYanlisIle();
+
+      kelimeKontrolYanlisIle(TemelYTurkce, TemelY1Turkce);
+
+
+      yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], TemelY1Turkce, TemelYTurkce);
+    }
+  } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
+    if (yanlis_sayac < 3) {
+      yanlis_sayac++;
+
+      yer1dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
+
+    } else {
+      yanlis_sayac = 0;
+      temelRandomYanlisIle();
+
+      kelimeKontrolYanlisIle(TemelYTurkce, TemelY1Turkce);
+
+      yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], TemelY1Turkce, TemelYTurkce);
+    }
+  } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
+    if (yanlis_sayac < 2) {
+      yanlis_sayac++;
+
+      yer1dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
+
+
+    } else {
+      yanlis_sayac = 0;
+      temelRandomYanlisIle();
+
+      kelimeKontrolYanlisIle(TemelYTurkce, TemelY1Turkce);
+
+      yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], TemelY1Turkce, TemelYTurkce);
+    }
+  } else {
+
+    temelRandom();
+
+    kelimekontrol();
+
+    yer1dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
+  }
+}
+
+void girisEkran() {
+  sayfa = 1;
+
+  tft.fillScreen(0x0000);
+
+  Yazilar(40, 40, "ingilizce kelime", "siyah", 4);
+
+  Yazilar(170, 90, "oyunu", "siyah", 4);
+
+  tft.drawRect(140, 205, 150, 60, 0xFFFF);
+  Yazilar(160, 220, "Basla", "siyah", 4);
+
+  cevap_bekleme = 0;
+  skor = 0;
+}
+
+void seviyeEkran() {
+  sayfa = 2;
+  tft.fillScreen(0x0000);
+  Yazilar(60, 100, "Seviye Seciniz", "siyah", 4);
+
+  Yazilar(80, 200, "A1", "siyah", 4);
+
+  Yazilar(190, 200, "A2", "siyah", 4);
+
+  Yazilar(310, 200, "B1", "siyah", 4);
+
+  Geri();
 }
 
 #pragma endregion MetotBitis
@@ -349,14 +584,7 @@ void setup() {
 
   //Giriş sayfası
   tft.setRotation(3);
-  tft.fillScreen(0x0000);
-
-  Yazilar(40, 40, "ingilizce kelime", "siyah", 4);
-
-  Yazilar(170, 90, "oyunu", "siyah", 4);
-
-  tft.drawRect(140, 205, 150, 60, 0xFFFF);
-  Yazilar(160, 220, "Basla", "siyah", 4);
+  girisEkran();
 }
 
 void loop() {
@@ -371,18 +599,8 @@ void loop() {
 
     //Giriş sayfasından seviye seçim sayfasına geçiş
     if (p.x > 660 && p.x < 805 && p.y > 372 && p.y < 639 && sayfa == 1) {
-      sayfa = 2;
-      tft.fillScreen(0x0000);
-      Yazilar(60, 100, "Seviye Seciniz", "siyah", 4);
 
-      Yazilar(80, 200, "A1", "siyah", 4);
-
-      Yazilar(190, 200, "A2", "siyah", 4);
-
-      Yazilar(310, 200, "B1", "siyah", 4);
-
-      tft.fillRect(0, 20, 78, 40, 0xFFFF);
-      Yazilar(5, 30, "Geri", "beyaz", 3);
+      seviyeEkran();
 
       p.x = 0;
       p.y = 0;
@@ -416,17 +634,9 @@ void loop() {
     delay(100);
     // Soru cevap sayafasıdaki yani sayfa 3 teki geri butonuna basınca sayfa 2 yi açması için
     if (p.x < 340 && p.x > 170 && p.y < 310 && p.y > 163 && sayfa == 3) {
-      sayfa = 2;
-      tft.fillScreen(0x0000);
-      Yazilar(60, 100, "Seviye Seciniz", "siyah", 4);
 
-      Yazilar(80, 200, "A1", "siyah", 4);
+      seviyeEkran();
 
-      Yazilar(190, 200, "A2", "siyah", 4);
-
-      Yazilar(310, 200, "B1", "siyah", 4);
-
-      Geri();
       p.x = 0;
       p.y = 0;
 
@@ -445,22 +655,12 @@ void loop() {
     //Seviye seçme sayfasındaki geri butonuna basınca sayfa 1 i açar
     if (p.x < 340 && p.x > 170 && p.y < 310 && p.y > 163 && sayfa == 2) {
       sayfa = 1;
+      girisEkran();
 
-      tft.setRotation(3);
-      tft.fillScreen(0x0000);
-
-      Yazilar(40, 40, "ingilizce kelime", "siyah", 4);
-
-      Yazilar(170, 90, "oyunu", "siyah", 4);
-
-      tft.drawRect(140, 205, 150, 60, 0xFFFF);
-      Yazilar(160, 220, "Basla", "siyah", 4);
-
-      cevap_bekleme = 0;
-      skor = 0;
       p.x = 0;
       p.y = 0;
     }
+
 
 
     /* Cevaba dokunduktan sonra pixel kordinatına göre doğru yanlış kontrolü için 
@@ -498,9 +698,7 @@ void loop() {
         temelRandomYerIle();
 
         kelimekontrol();
-        Serial.println("girdi1");
-        Serial.println("girdi2");
-        Serial.println("girdi3");
+
 
         if (seviye == 1) {  //A1 seviyesinin soru ekranı
           tft.fillScreen(0x0000);
@@ -508,334 +706,38 @@ void loop() {
           Geri();
 
           if (yer == 1) {  // A1 seviyesinde doğru cevap 1. şıkta olan soru komutları
-            Skor();
 
-            if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 4) {
-                yanlis_sayac++;
-                yer1dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
+            yer1Sorular(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
 
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
 
-                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
 
-                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
-
-              if (yanlis_sayac < 3) {
-                yanlis_sayac++;
-
-                yer1dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-
-              } else {
-
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
-
-                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 2) {
-                yanlis_sayac++;
-                yer1dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-
-              } else {
-
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
-
-                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-              }
-            } else {
-              temelRandom();
-
-              kelimekontrol();
-
-              yer1dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-            }
           } else if (yer == 2) {  // A1 seviyesinde doğru cevap 2. şıkta olan soru komutları
-            Skor();
 
-            if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 4) {
-                yanlis_sayac++;
-                yer2dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
+            yer2Sorular(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
 
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
 
-                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
-
-                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-              }
-
-            } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
-
-              if (yanlis_sayac < 3) {
-                yanlis_sayac++;
-                yer2dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-
-              } else {
-
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
-
-                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 2) {
-                yanlis_sayac++;
-                yer2dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-
-              } else {
-
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
-
-                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-              }
-            } else {
-              temelRandom();
-
-              kelimekontrol();
-
-              yer2dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-            }
           } else if (yer == 3) {  // A1 seviyesinde doğru cevap 3. şıkta olan soru komutları
-            Skor();
 
-            if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 4) {
-                yanlis_sayac++;
-
-                yer3dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
-
-                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-              }
-
-            } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
-
-              if (yanlis_sayac < 3) {
-                yanlis_sayac++;
-
-                yer3dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-
-              } else {
-
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
-
-                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 2) {
-                yanlis_sayac++;
-                yer3dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-
-              } else {
-
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A1_turkce[Ysayi], A1_turkce[Y1sayi]);
-
-                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-
-
-                hata_soru = true;
-              }
-            } else {
-              temelRandom();
-
-              kelimekontrol();
-
-              yer3dogru(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-            }
+            yer3Sorular(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
           }
         }
         if (seviye == 2) {  //A2 seviyesinin soru ekranı
           tft.fillScreen(0x0000);
           Geri();
-          Serial.println("girdia2");
+
           if (yer == 1) {  // A2 seviyesinde doğru cevap 1. şıkta olan soru komutları
-            Skor();
 
-            if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 4) {
-                yanlis_sayac++;
+            yer1Sorular(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
-                yer1dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
-
-                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
-
-              if (yanlis_sayac < 3) {
-                yanlis_sayac++;
-
-                yer1dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-
-              } else {
-
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
-
-                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 2) {
-                yanlis_sayac++;
-
-                yer1dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-
-              } else {
-
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
-
-                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-              }
-            } else {
-              temelRandom();
-
-              kelimekontrol();
-
-              yer1dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-            }
           } else if (yer == 2) {  // A2 seviyesinde doğru cevap 2. şıkta olan soru komutları
-            Skor();
 
-            if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 4) {
-                yanlis_sayac++;
+            yer2Sorular(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
-                yer2dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
-
-                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
-
-              if (yanlis_sayac < 3) {
-                yanlis_sayac++;
-
-                yer2dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
-
-                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 2) {
-                yanlis_sayac++;
-                yer2dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-
-              } else {
-
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
-
-                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-              }
-            } else {
-              temelRandom();
-
-              kelimekontrol();
-
-              yer2dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-            }
           } else if (yer == 3) {  // A2 seviyesinde doğru cevap 3. şıkta olan soru komutları
-            Skor();
 
-            if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 4) {
-                yanlis_sayac++;
-                yer3dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
-
-                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
-
-              if (yanlis_sayac < 3) {
-                yanlis_sayac++;
-
-                yer3dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
-
-                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 2) {
-                yanlis_sayac++;
-
-                yer3dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(A2_turkce[Ysayi], A2_turkce[Y1sayi]);
-
-                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-              }
-            } else {
-              temelRandom();
-
-              kelimekontrol();
-
-              yer3dogru(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
-            }
+            yer3Sorular(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
           }
         }
         if (seviye == 3) {  //B1 seviyesinin soru ekranı
@@ -843,166 +745,23 @@ void loop() {
           Geri();
 
           if (yer == 1) {  //  B1 seviyesinde doğru cevap 1. şıkta olan soru komutları
-            Skor();
 
-            if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 4) {
-                yanlis_sayac++;
+            yer1Sorular(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
-                yer1dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
-
-                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-              }
-
-            } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 3) {
-                yanlis_sayac++;
-
-                yer1dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
-
-                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 2) {
-                yanlis_sayac++;
-
-                yer1dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
-
-                yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-              }
-            } else {
-              temelRandom();
-
-              kelimekontrol();
-
-              yer1dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-            }
           } else if (yer == 2) {  // B1 seviyesinde doğru cevap 2. şıkta olan soru komutları
-            Skor();
 
-            if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 4) {
-                yanlis_sayac++;
+            yer2Sorular(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
-                yer2dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
-
-                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 3) {
-                yanlis_sayac++;
-
-                yer2dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
-
-                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 2) {
-                yanlis_sayac++;
-
-                yer2dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
-
-                yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-              }
-            } else {
-              temelRandom();
-
-              kelimekontrol();
-
-              yer2dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-            }
           } else if (yer == 3) {  // B1 seviyesinde doğru cevap 3. şıkta olan soru komutları
-            Skor();
 
-            if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 4) {
-                yanlis_sayac++;
-
-                yer3dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
-
-                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 10 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 3) {
-                yanlis_sayac++;
-
-                yer3dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
-
-                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-              }
-            } else if (yanlis_eleman <= 15 && yanlis_eleman >= 1) {
-              if (yanlis_sayac < 2) {
-                yanlis_sayac++;
-
-                yer3dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-
-              } else {
-                yanlis_sayac = 0;
-                temelRandomYanlisIle();
-
-                kelimeKontrolYanlisIle(B1_turkce[Ysayi], B1_turkce[Y1sayi]);
-
-                yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-              }
-            } else {
-              temelRandom();
-
-              kelimekontrol();
-
-              yer3dogru(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
-            }
+            yer3Sorular(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
           }
         }
       }
     }
+
 
     p.x = 0;
     p.y = 0;
