@@ -60,6 +60,7 @@ short cevap_bekleme;  //Soru cevap sayfası yüklendikten sonra cevap verilene k
 short onceki_kelime;  // Peşpeşe aynı ingilizce kelime gelmemesi için kullanıldı
 
 
+
 #pragma region Metotlar
 
 void Geri() {
@@ -169,12 +170,9 @@ void temelRandomYanlisIle() {
 void yer1dogru(String ingilizce, String dturkce, String y1turkce, String yturkce) {
   Yazilar(100, 80, ingilizce, "siyah", 4);
 
-
   Yazilar(30, 200, dturkce, "siyah", 3);
 
-
   Yazilar(130, 270, y1turkce, "siyah", 3);
-
 
   Yazilar(260, 200, yturkce, "siyah", 3);
 
@@ -184,12 +182,9 @@ void yer1dogru(String ingilizce, String dturkce, String y1turkce, String yturkce
 void yer1yanlis(String ingilizce, String dturkce, String y1turkce, String yturkce) {
   Yazilar(100, 80, ingilizce, "siyah", 4);
 
-
   Yazilar(30, 200, dturkce, "siyah", 3);
 
-
   Yazilar(130, 270, y1turkce, "siyah", 3);
-
 
   Yazilar(260, 200, yturkce, "siyah", 3);
 
@@ -200,12 +195,9 @@ void yer1yanlis(String ingilizce, String dturkce, String y1turkce, String yturkc
 void yer2dogru(String ingilizce, String dturkce, String y1turkce, String yturkce) {
   Yazilar(100, 80, ingilizce, "siyah", 4);
 
-
   Yazilar(30, 200, y1turkce, "siyah", 3);
 
-
   Yazilar(130, 270, dturkce, "siyah", 3);
-
 
   Yazilar(260, 200, yturkce, "siyah", 3);
 
@@ -215,12 +207,9 @@ void yer2dogru(String ingilizce, String dturkce, String y1turkce, String yturkce
 void yer2yanlis(String ingilizce, String dturkce, String y1turkce, String yturkce) {
   Yazilar(100, 80, ingilizce, "siyah", 4);
 
-
   Yazilar(30, 200, y1turkce, "siyah", 3);
 
-
   Yazilar(130, 270, dturkce, "siyah", 3);
-
 
   Yazilar(260, 200, yturkce, "siyah", 3);
 
@@ -231,12 +220,9 @@ void yer2yanlis(String ingilizce, String dturkce, String y1turkce, String yturkc
 void yer3dogru(String ingilizce, String dturkce, String y1turkce, String yturkce) {
   Yazilar(100, 80, ingilizce, "siyah", 4);
 
-
   Yazilar(30, 200, y1turkce, "siyah", 3);
 
-
   Yazilar(130, 270, yturkce, "siyah", 3);
-
 
   Yazilar(260, 200, dturkce, "siyah", 3);
 
@@ -246,12 +232,9 @@ void yer3dogru(String ingilizce, String dturkce, String y1turkce, String yturkce
 void yer3yanlis(String ingilizce, String dturkce, String y1turkce, String yturkce) {
   Yazilar(100, 80, ingilizce, "siyah", 4);
 
-
   Yazilar(30, 200, y1turkce, "siyah", 3);
 
-
   Yazilar(130, 270, yturkce, "siyah", 3);
-
 
   Yazilar(260, 200, dturkce, "siyah", 3);
 
@@ -278,7 +261,6 @@ void dogruisaretleme() {
         yanlisSilme(p);
       }
     }
-
 
   } else if (seviye == 2 && yanlis_eleman >= 1) {
 
@@ -319,8 +301,6 @@ void dogruisaretleme() {
 }
 
 void yanlisisaretleme() {
-
-
   if (skor > 0)
     skor = 0;
   cevap_bekleme = 0;
@@ -352,7 +332,6 @@ void yanlisisaretleme() {
     yanlis_eleman++;
   }
 
-
   tft.setCursor(330, 70);
   tft.setTextColor(0x07FF);
   tft.setTextSize(3);
@@ -362,7 +341,6 @@ void yanlisisaretleme() {
 
 void yer3Sorular(String TemelDogruIngilizce, String TemelDogruTurkce, String TemelY1Turkce, String TemelYTurkce) {
   Skor();
-
 
   if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
     if (yanlis_sayac < 4) {
@@ -375,8 +353,6 @@ void yer3Sorular(String TemelDogruIngilizce, String TemelDogruTurkce, String Tem
       temelRandomYanlisIle();
 
       kelimeKontrolYanlisIle(TemelYTurkce, TemelY1Turkce);
-
-
 
       yer3yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], TemelY1Turkce, TemelYTurkce);
     }
@@ -422,8 +398,6 @@ void yer3Sorular(String TemelDogruIngilizce, String TemelDogruTurkce, String Tem
 void yer2Sorular(String TemelDogruIngilizce, String TemelDogruTurkce, String TemelY1Turkce, String TemelYTurkce) {
   Skor();
 
-
-
   if (yanlis_eleman <= 5 && yanlis_eleman >= 1) {
     if (yanlis_sayac < 4) {
       yanlis_sayac++;
@@ -435,8 +409,6 @@ void yer2Sorular(String TemelDogruIngilizce, String TemelDogruTurkce, String Tem
       temelRandomYanlisIle();
 
       kelimeKontrolYanlisIle(TemelYTurkce, TemelY1Turkce);
-
-
 
       yer2yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], TemelY1Turkce, TemelYTurkce);
     }
@@ -490,13 +462,11 @@ void yer1Sorular(String TemelDogruIngilizce, String TemelDogruTurkce, String Tem
 
       yer1dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
 
-
     } else {
       yanlis_sayac = 0;
       temelRandomYanlisIle();
 
       kelimeKontrolYanlisIle(TemelYTurkce, TemelY1Turkce);
-
 
       yer1yanlis(yanlis_ingilizce[Dsayi], yanlis_turkce[Dsayi], TemelY1Turkce, TemelYTurkce);
     }
@@ -519,7 +489,6 @@ void yer1Sorular(String TemelDogruIngilizce, String TemelDogruTurkce, String Tem
       yanlis_sayac++;
 
       yer1dogru(TemelDogruIngilizce, TemelDogruTurkce, TemelY1Turkce, TemelYTurkce);
-
 
     } else {
       yanlis_sayac = 0;
@@ -569,6 +538,8 @@ void seviyeEkran() {
   Geri();
 }
 
+
+
 #pragma endregion MetotBitis
 
 void setup() {
@@ -595,58 +566,46 @@ void loop() {
     pinMode(A2, OUTPUT);
     pinMode(A3, OUTPUT);
 
-    delay(100);
+    
 
     //Giriş sayfasından seviye seçim sayfasına geçiş
     if (p.x > 660 && p.x < 805 && p.y > 372 && p.y < 639 && sayfa == 1) {
-
       seviyeEkran();
-
       p.x = 0;
       p.y = 0;
     }
-
-
-
     //Seviye seçme sayfasında yani sayfa 2 de basılan pixelin kordinatına göre seviye seçimi
     if (sayfa == 2) {
       if (p.x > 650 && p.x < 741 && p.y > 290 && p.y < 374) {  //A1 seviyesi
         seviyesecim(3, 1, 0);
-
         p.x = 0;
         p.y = 0;
       }
 
       else if (p.x > 657 && p.x < 736 && p.y > 475 && p.y < 569) {  //A2 seviyesi
         seviyesecim(3, 2, 0);
-
         p.x = 0;
         p.y = 0;
       }
 
       else if (p.x > 657 && p.x < 728 && p.y > 679 && p.y < 752) {  //B1 seviyesi
         seviyesecim(3, 3, 0);
-
         p.x = 0;
         p.y = 0;
       }
     }
-    delay(100);
+    
     // Soru cevap sayafasıdaki yani sayfa 3 teki geri butonuna basınca sayfa 2 yi açması için
     if (p.x < 340 && p.x > 170 && p.y < 310 && p.y > 163 && sayfa == 3) {
-
+      
       seviyeEkran();
 
-      p.x = 0;
-      p.y = 0;
-
-      for (int i = 0; i < 20; i++) {
+      for (int i = 0; i <= 20; i++) {
         yanlis_ingilizce[i] = "bos";
         yanlis_turkce[i] = "bos";
-        yanlis_eleman = 0;
-        yanlis_sayac = 0;
       }
-
+      yanlis_eleman = 0;
+      yanlis_sayac = 0;
       cevap_bekleme = 0;
       skor = 0;
       p.x = 0;
@@ -656,13 +615,9 @@ void loop() {
     if (p.x < 340 && p.x > 170 && p.y < 310 && p.y > 163 && sayfa == 2) {
       sayfa = 1;
       girisEkran();
-
       p.x = 0;
       p.y = 0;
     }
-
-
-
     /* Cevaba dokunduktan sonra pixel kordinatına göre doğru yanlış kontrolü için 
     not:cevap kontrolü soru kodlarında önce yazılmıştır çünkü soru kodlarından sonra yazıldığı zaman cevaba 2 defa tıklandıktan sonra diğer soru sayfası açılıyordu.*/
     if (yer == 1 && p.x < 709 && p.x > 646 && p.y < 372 && p.y > 189 && sayfa == 3 && cevap_bekleme == 1) {  //doğru cevabın 1. şıkta olduğu soruda doğru şıkka dokunulduğunda olacaklar
@@ -689,37 +644,35 @@ void loop() {
       yanlisisaretleme();
     }
 
+      
+       
     if (cevap_bekleme == 0) {  // Soru sayfası açıldıktan sonra cevap verilene kadar sayfanın değişmemesi için
 
       if (sayfa == 3) {
-        //Dizi den kelime seçmek için random komutunu kullanıyorum
+       
         cevap_bekleme = 1;
 
         temelRandomYerIle();
 
         kelimekontrol();
 
-
         if (seviye == 1) {  //A1 seviyesinin soru ekranı
           tft.fillScreen(0x0000);
-
           Geri();
 
           if (yer == 1) {  // A1 seviyesinde doğru cevap 1. şıkta olan soru komutları
 
             yer1Sorular(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
 
-
-
           } else if (yer == 2) {  // A1 seviyesinde doğru cevap 2. şıkta olan soru komutları
 
             yer2Sorular(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
-
 
           } else if (yer == 3) {  // A1 seviyesinde doğru cevap 3. şıkta olan soru komutları
 
             yer3Sorular(A1_ingilizce[Dsayi], A1_turkce[Dsayi], A1_turkce[Y1sayi], A1_turkce[Ysayi]);
           }
+          
         }
         if (seviye == 2) {  //A2 seviyesinin soru ekranı
           tft.fillScreen(0x0000);
@@ -729,15 +682,14 @@ void loop() {
 
             yer1Sorular(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
-
           } else if (yer == 2) {  // A2 seviyesinde doğru cevap 2. şıkta olan soru komutları
 
             yer2Sorular(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
 
-
           } else if (yer == 3) {  // A2 seviyesinde doğru cevap 3. şıkta olan soru komutları
 
             yer3Sorular(A2_ingilizce[Dsayi], A2_turkce[Dsayi], A2_turkce[Y1sayi], A2_turkce[Ysayi]);
+
           }
         }
         if (seviye == 3) {  //B1 seviyesinin soru ekranı
@@ -753,18 +705,28 @@ void loop() {
 
             yer2Sorular(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
 
-
           } else if (yer == 3) {  // B1 seviyesinde doğru cevap 3. şıkta olan soru komutları
 
             yer3Sorular(B1_ingilizce[Dsayi], B1_turkce[Dsayi], B1_turkce[Y1sayi], B1_turkce[Ysayi]);
+
           }
         }
+        
       }
     }
-
-
+    
+    
+      
+delay(100);
     p.x = 0;
     p.y = 0;
+    
   }
-  delay(100);
+  
+
+      
+        
+  
+ 
+  
 }
